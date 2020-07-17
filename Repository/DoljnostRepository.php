@@ -13,8 +13,8 @@ use DI\Annotation\Injectable;
 class DoljnostRepository extends AbstractRepository
 {
 
-	final static function getTableName(): string
-	{
-		return 'doljnost';
-	}
+    final static function getTableName(): string
+    {
+        return 'doljnost';
+    }
 }

@@ -10,16 +10,16 @@ use Pecee\SimpleRouter\SimpleRouter;
 
 abstract class AbstractController
 {
-	/**
-	 * @Inject
-	 * @var InputHandler
-	 */
-	protected $inputHandler;
+    /**
+     * @Inject
+     * @var InputHandler
+     */
+    protected $inputHandler;
 
-	protected function BadRequest(int $code = 400, string $message = 'Bad request'): string
-	{
-		SimpleRouter::response()->httpCode($code);
+    protected function BadRequest(int $code = 400, string $message = 'Bad request'): string
+    {
+        SimpleRouter::response()->httpCode($code);
 
-		return $message;
-	}
+        return $message;
+    }
 }

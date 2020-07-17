@@ -13,28 +13,28 @@ use DI\Annotation\Injectable;
 class SchoolRepository extends AbstractRepository
 {
 
-	public function findAll()
-	{
-		$stmt = $this->dbo->query(sprintf("SELECT * FROM %s WHERE id != '0000'", $this::getTableName()));
-		return $stmt->fetchAll();
-	}
+    public function findAll()
+    {
+        $stmt = $this->dbo->query(sprintf("SELECT * FROM %s WHERE id != '0000'", $this::getTableName()));
+        return $stmt->fetchAll();
+    }
 
-	public function getByAreaCode($areaCode)
-	{
-		$stmt = $this->dbo->prepare("SELECT * FROM " . $this::getTableName() . " WHERE AreaCode = :areacode");
-		$stmt->execute([':areacode' => $areaCode]);
-		return $stmt->fetchAll();
-	}
+    final static function getTableName(): string
+    {
+        return 'schools';
+    }
 
-	public function findById($id)
-	{
-		$stmt = $this->dbo->prepare("SELECT * FROM " . $this::getTableName() . " WHERE id = :id");
-		$stmt->execute([':id' => $id]);
-		return $stmt->fetch();
-	}
+    public function getByAreaCode($areaCode)
+    {
+        $stmt = $this->dbo->prepare("SELECT * FROM " . $this::getTableName() . " WHERE AreaCode = :areacode");
+        $stmt->execute([':areacode' => $areaCode]);
+        return $stmt->fetchAll();
+    }
 
-	final static function getTableName(): string
-	{
-		return 'schools';
-	}
+    public function findById($id)
+    {
+        $stmt = $this->dbo->prepare("SELECT * FROM " . $this::getTableName() . " WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch();
+    }
 }

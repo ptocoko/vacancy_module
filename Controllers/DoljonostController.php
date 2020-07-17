@@ -8,23 +8,22 @@ use App\Repository\DoljnostRepository;
 
 class DoljonostController extends AbstractController
 {
-	/**
-	 * @var DoljnostRepository
-	 */
-	private $repository;
+    /**
+     * @var DoljnostRepository
+     */
+    private $repository;
 
-	/**
-	 * DoljonostController constructor.
-	 * @param DoljnostRepository $repository
-	 */
-	public function __construct(DoljnostRepository $repository)
-	{
+    /**
+     * DoljonostController constructor.
+     * @param DoljnostRepository $repository
+     */
+    public function __construct(DoljnostRepository $repository)
+    {
+        $this->repository = $repository;
+    }
 
-		$this->repository = $repository;
-	}
-
-	public function getAll()
-	{
-		return json_encode($this->repository->findAll());
-	}
+    public function getAll()
+    {
+        return json_encode($this->repository->findAll());
+    }
 }
