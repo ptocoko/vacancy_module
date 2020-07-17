@@ -1,29 +1,29 @@
 class Vacancy {
-    #areaName;
-    #date;
-    #doljnost;
-    #typeDoljnost;
-    #schoolName;
-    #staj;
-    #zp;
-    #dopInfo;
-    #id;
+    areaName;
+    date;
+    doljnost;
+    typeDoljnost;
+    schoolName;
+    staj;
+    zp;
+    dopInfo;
+    id;
     isShown = false;
 
     constructor(areaName, date, doljnost, typDoljnost, schoolName, staj, zp, dopInfo, id) {
-        this.#id = id;
-        this.#areaName = areaName.replace(' МР', '');
-        this.#date = date;
-        this.#doljnost = doljnost;
-        this.#typeDoljnost = typDoljnost;
-        this.#schoolName = schoolName;
-        this.#staj = staj;
-        this.#zp = zp;
-        this.#dopInfo = dopInfo;
+        this.id = id;
+        this.areaName = areaName.replace(' МР', '');
+        this.date = date;
+        this.doljnost = doljnost;
+        this.typeDoljnost = typDoljnost;
+        this.schoolName = schoolName;
+        this.staj = staj;
+        this.zp = zp;
+        this.dopInfo = dopInfo;
         Vacancy.index++;
     }
 
-    #modalClosing = (modalBlock, modalFonBlock) => {
+    modalClosing = (modalBlock, modalFonBlock) => {
         modalFonBlock.removeClass("active");
         modalBlock.removeClass("active");
         $('body').css('overflow', 'auto');
@@ -31,23 +31,23 @@ class Vacancy {
             modalBlock.html('')
         }, 450);
     };
-    #getDopInfo = () => this.#dopInfo.length ? `<p class="mb-0"><b>Доп-ая информация</b>: <span>${this.#dopInfo}</span>` : '';
-    #getDoljnost = () => this.#typeDoljnost === '1' ? `Учитель ${this.#doljnost}` : `${this.#doljnost}`;
-    #getZp = () => this.#zp === 'no' ? 'Не указана' : this.#zp + ' &#8381;';
-    #getMarkUp = () => `<div class=" bg-white shadow-1" style="width: 360px; border-radius: 3px;">
-                <div class="px-2 py-2"><p class="small font-weight-medium text-uppercase text-muted lts-2px">${this.#date}</p>
+    getDopInfo = () => this.dopInfo.length ? `<p class="mb-0"><b>Доп-ая информация</b>: <span>${this.dopInfo}</span>` : '';
+    getDoljnost = () => this.typeDoljnost === '1' ? `Учитель ${this.doljnost}` : `${this.doljnost}`;
+    getZp = () => this.zp === 'no' ? 'Не указана' : this.zp + ' &#8381;';
+    getMarkUp = () => `<div class=" bg-white shadow-1" style="width: 360px; border-radius: 3px;">
+                <div class="px-2 py-2"><p class="small font-weight-medium text-uppercase text-muted lts-2px">${this.date}</p>
                     <h1 class="ff-serif font-weight-normal text-black card-heading my-1" style="line-height: 1.25; font-size: 1.75rem;">
-                    ${this.#getDoljnost()}
+                    ${this.getDoljnost()}
                     </h1>
-                    <p class="mb-1"><b>Район</b>: <span>${this.#areaName.replace(' МР', '')}</span></p>
-                    <p class="mb-1"><b>Школа</b>: <span>${this.#schoolName}</span></p>
-                    <p class="mb-1"><b>Зарпалата</b>: <span>${this.#getZp()} </span></p>
-                    <p class="mb-1"><b>Стаж работы</b>: <span>${this.#staj}</span></p>
+                    <p class="mb-1"><b>Район</b>: <span>${this.areaName.replace(' МР', '')}</span></p>
+                    <p class="mb-1"><b>Школа</b>: <span>${this.schoolName}</span></p>
+                    <p class="mb-1"><b>Зарпалата</b>: <span>${this.getZp()} </span></p>
+                    <p class="mb-1"><b>Стаж работы</b>: <span>${this.staj}</span></p>
                 </div>
-            <a id="${this.#id}" class="text-uppercase d-inline-block mb-1 font-weight-medium lts-2px text-center styled-link exit__btn"
+            <a id="${this.id}" class="text-uppercase d-inline-block mb-1 font-weight-medium lts-2px text-center styled-link exit__btn"
                href="##">Подробнее</a>
             </div>`;
-    #modalMarkUp = () => {
+    modalMarkUp = () => {
         return `
             <a class="close-modal">
                 <svg viewBox="0 0 20 20">
@@ -60,16 +60,16 @@ class Vacancy {
                      style="width: 100%; overflow: hidden; border-radius: 1px;">
                     <div class="px-2 py-2">
                         <p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px">
-                            ${this.#date}</p>
+                            ${this.date}</p>
                         <h1 class="ff-serif font-weight-normal text-black card-heading mt-0 mb-1"
                             style="line-height: 1.25;">
-                            ${this.#getDoljnost()}
+                            ${this.getDoljnost()}
                         </h1>
-                        <p class="mb-1"><b>Район</b>: <span>${this.#areaName}</span></p>
-                        <p class="mb-1"><b>Школа</b>: <span>${this.#schoolName}</span></p>
-                        <p class="mb-1"><b>Зарпалата</b>: <span>${this.#getZp()}</span></p>
-                        <p class="mb-1"><b>Стаж работы</b>: <span>${this.#staj}</span></p>
-                        ${this.#getDopInfo()}
+                        <p class="mb-1"><b>Район</b>: <span>${this.areaName}</span></p>
+                        <p class="mb-1"><b>Школа</b>: <span>${this.schoolName}</span></p>
+                        <p class="mb-1"><b>Зарпалата</b>: <span>${this.getZp()}</span></p>
+                        <p class="mb-1"><b>Стаж работы</b>: <span>${this.staj}</span></p>
+                        ${this.getDopInfo()}
                         </p>
                     </div>
                     </p>
@@ -95,7 +95,7 @@ class Vacancy {
                     </div>
                     <a class="mx-1 text-uppercase d-block font-weight-medium lts-2px text-center styled-link exit__btn"
                            id="send_vacancy_response"
-                           value="${this.#id}">
+                           value="${this.id}">
                            <i class="icon icon-message"></i>Отправить отзыв
                     </a>
                 </form>
@@ -131,14 +131,14 @@ class Vacancy {
                 </div>`;
     }
 
-    #markUpHandlers = (modalBlock, modalFonBlock) => {
-        $('#' + this.#id).on('click', (e) => {
+    markUpHandlers = (modalBlock, modalFonBlock) => {
+        $('#' + this.id).on('click', (e) => {
             e.preventDefault();
             $('body').css('overflow', 'hidden');
             modalFonBlock.addClass('active');
-            modalBlock.html(this.#modalMarkUp()).after(() => {
+            modalBlock.html(this.modalMarkUp()).after(() => {
                 modalBlock.addClass("active");
-                $('.close-modal').on('click', () => this.#modalClosing(modalBlock, modalFonBlock));
+                $('.close-modal').on('click', () => this.modalClosing(modalBlock, modalFonBlock));
                 $('#otclick').on('click', (e) => {
                     e.preventDefault();
                     $('.modal_form').slideToggle(600).after(() => {
@@ -148,7 +148,7 @@ class Vacancy {
                             $.post({
                                 url: `${baseUrl}/vacancyresponse/postresponse`,
                                 data: {
-                                    'vid': this.#id,
+                                    'vid': this.id,
                                     'comment': $('#comment').val()
                                 }
                             }).fail((jqXHR, textStatus) => {
@@ -163,7 +163,7 @@ class Vacancy {
                                         window.location.href = "http://pedagogchr.ru/?openlogin=1";
                                     }, 2000)
                                 } else {
-                                    setTimeout(() => this.#modalClosing(modalBlock, modalFonBlock), 1300)
+                                    setTimeout(() => this.modalClosing(modalBlock, modalFonBlock), 1300)
                                 }
                             }).done(() => {
                                 $('.modal_form').hide().after(() => {
@@ -171,7 +171,7 @@ class Vacancy {
                                         .after(() => {
                                             this.modalCenter();
                                         });
-                                    setTimeout(() => this.#modalClosing(modalBlock, modalFonBlock), 1300)
+                                    setTimeout(() => this.modalClosing(modalBlock, modalFonBlock), 1300)
                                 })
                             });
                         })
@@ -182,9 +182,9 @@ class Vacancy {
     };
 
     renderVacancyTeacherSide(block, baseId, modalBlock, modalFonBlock) {
-        block.append(this.#getMarkUp());
+        block.append(this.getMarkUp());
         block.hide().appendTo(baseId).slideDown(500);
-        this.#markUpHandlers(modalBlock, modalFonBlock);
+        this.markUpHandlers(modalBlock, modalFonBlock);
         this.isShown = true;
     }
 }
