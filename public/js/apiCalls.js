@@ -1,6 +1,6 @@
 const baseUrl = 'http://pedagogchr.test';
 const getAreas = async () => {
-    const {data} = await axios.get(`${baseUrl}/areas/getall`);
+    const {data} = await axios.get(`${baseUrl}/areas`);
     return data;
 };
 const getSchoolsByArea = async (areaCode) => {
@@ -8,12 +8,12 @@ const getSchoolsByArea = async (areaCode) => {
     return data;
 };
 const getSchools = async () => {
-    const {data} = await axios.get(`${baseUrl}/schools/getall`);
+    const {data} = await axios.get(`${baseUrl}/schools`);
     return data;
 };
 
 async function getDoljnosti() {
-    const {data} = await axios.get(`${baseUrl}/doljnost/getall`);
+    const {data} = await axios.get(`${baseUrl}/doljnost`);
     return data;
 }
 

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <title>Реестр</title><!--[if IE]>
-    <meta http-equiv="X-UA-Compatible" content="IE = edge"><![endif]-->
-    <meta content="width=device-width, initial-scale=1, user-scalable=0" name="viewport">
-    <link href="../img/favicon.ico" rel="icon">
-    <link href="../../css/main.css" rel="stylesheet">
-    <script
-            crossorigin="anonymous"
-            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-            src="https://code.jquery.com/jquery-3.4.1.js"></script>
-    <script src="../js/log_in.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
+	<meta charset="utf-8">
+	<title>Реестр</title><!--[if IE]>
+	<meta http-equiv="X-UA-Compatible" content="IE = edge"><![endif]-->
+	<meta content="width=device-width, initial-scale=1, user-scalable=0" name="viewport">
+	<link href="../img/favicon.ico" rel="icon">
+	<link href="../../css/main.css" rel="stylesheet">
+	<script
+			crossorigin="anonymous"
+			integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+			src="https://code.jquery.com/jquery-3.4.1.js"></script>
+	<script src="../js/log_in.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
 
 
-    <link href="../../css/style.css" rel="stylesheet">
-    <link href="../../css/vakansiya.scss" rel="stylesheet">
-    <script>
+	<link href="../../css/style.css" rel="stylesheet">
+	<link href="../../css/vakansiya.scss" rel="stylesheet">
+	<script>
 
         $("document").ready(function () {
 
@@ -53,244 +53,244 @@
 
 
         });
-    </script>
+	</script>
 
 </head>
 <body>
 <div class="wrapper">
-    <header class="header">
-        <div class="container">
-            <div class="header__content"><a class="logo" href="index.php">Реестр резерва педагогических кадров Чеченской
-                Республики</a>
-                <div class="header__nav">
-                    <div class="header__nav-bg js-nav-toggle"></div>
-                    <div class="header__nav-content">
-                        <div class="header__nav-close js-nav-toggle"></div>
-                        <div class="singin-box"><a href="index.php"><i
-                                class="icon icon-user "></i><?php echo $_SESSION['surname'] . ' ' . $_SESSION['name']; ?>
-                        </a><span></span><a href="#" id="logout"><i class="icon icon-logout "></i></a>
-                        </div>
-                        <div class="nav">
-                            <ul>
-                                <li><a href="../index.php">Главная</a>
-                                </li>
-                                <li><a href="../docs.php">Документы</a>
-                                </li>
-                                <li><a href="../rating.php">Рейтинг учителей</a>
-                                </li>
-                                <li><a href="base.php">База учителей</a>
-                                </li>
-                                <li class="droped"><a href="#">Впервые на сайте?</a>
-                                    <ul>
-                                        <li><a href="../text.php">Для учителей</a></li>
-                                        <li><a href="#">Регистрация</a></li>
-                                        <li><a href="#">Для директоров</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="../contacts.php">Контакты</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="burger"><a class="js-nav-toggle" href="#"><span></span></a></div>
-            </div>
-        </div>
-    </header>
-    <main class="content">
-        <div class="breadcrumbs">
-            <div class="container">
-                <ul>
-                    <li><a href="index.php"><i class="icon icon-home "></i>Главная</a></li>
-                    <li><span>Отозвались на вакансию</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="inner">
-            <div class="container">
-                <h2>Отозвались на вакансию</h2>
-                <div class="base">
-                    <form class="form">
+	<header class="header">
+		<div class="container">
+			<div class="header__content"><a class="logo" href="index.php">Реестр резерва педагогических кадров Чеченской
+				Республики</a>
+				<div class="header__nav">
+					<div class="header__nav-bg js-nav-toggle"></div>
+					<div class="header__nav-content">
+						<div class="header__nav-close js-nav-toggle"></div>
+						<div class="singin-box"><a href="index.php"><i
+								class="icon icon-user "></i><?php echo $_SESSION['surname'] . ' ' . $_SESSION['name']; ?>
+						</a><span></span><a href="#" id="logout"><i class="icon icon-logout "></i></a>
+						</div>
+						<div class="nav">
+							<ul>
+								<li><a href="../index.php">Главная</a>
+								</li>
+								<li><a href="../docs.php">Документы</a>
+								</li>
+								<li><a href="../rating.php">Рейтинг учителей</a>
+								</li>
+								<li><a href="base.php">База учителей</a>
+								</li>
+								<li class="droped"><a href="#">Впервые на сайте?</a>
+									<ul>
+										<li><a href="../text.php">Для учителей</a></li>
+										<li><a href="#">Регистрация</a></li>
+										<li><a href="#">Для директоров</a></li>
+									</ul>
+								</li>
+								<li><a href="../contacts.php">Контакты</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="burger"><a class="js-nav-toggle" href="#"><span></span></a></div>
+			</div>
+		</div>
+	</header>
+	<main class="content">
+		<div class="breadcrumbs">
+			<div class="container">
+				<ul>
+					<li><a href="index.php"><i class="icon icon-home "></i>Главная</a></li>
+					<li><span>Отозвались на вакансию</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="inner">
+			<div class="container">
+				<h2>Отозвались на вакансию</h2>
+				<div class="base">
+					<form class="form">
 
 
-                        <div class="base-box">
+						<div class="base-box">
 
-                            <div class="base-box__chekcs">
-
-
-                            </div>
-                            <div class="base-box">
-                                <div id="js"></div>
+							<div class="base-box__chekcs">
 
 
-                                <div class="modal-overlay" id="new_vakansiya_fon" style="z-index:20;">
-                                    <div class="modal" id="new_vakansiya_modal">
-
-                                        <a class="close-modal" id="close_new_vakansiya">
-                                            <svg viewBox="0 0 20 20">
-                                                <path d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"
-                                                      fill="#000000"></path>
-                                            </svg>
-                                        </a><!-- close modal -->
+							</div>
+							<div class="base-box">
+								<div id="js"></div>
 
 
-                                        <div class="modal-content" style="width:100%;">
-                                            <div class="my-2 mx-auto p-relative bg-white shadow-1 blue-hover"
-                                                 style="width: 100%; overflow: hidden; border-radius: 1px;">
-                                                <div class="px-2 py-2">
-                                                    <p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px">
-                                                        08.10.2019
-                                                    </p>
-                                                    <h1 class="ff-serif font-weight-normal text-black card-heading mt-0 mb-1"
-                                                        style="line-height: 1.25;">
-                                                        <select id="base_dolj">
-                                                            <option selected="" value="">Выберите должность</option>
-                                                            <option value="1">Воспитатель</option>
-                                                            <option value="2">Инструктор-методист</option>
-                                                            <option value="3">Инструктор по труду</option>
-                                                            <option value="4">Инструктор по физической культуре</option>
-                                                            <option value="5">Концертмейстер</option>
-                                                            <option value="6"> Логопед</option>
-                                                            <option value="7">Мастер производственного обучения</option>
-                                                            <option value="8">Методист</option>
-                                                            <option value="9"> Музыкальный руководитель</option>
-                                                            <option value="10">Педагог дополнительного образования
-                                                            </option>
-                                                            <option value="11"> Педагог-библиотекарь</option>
-                                                            <option value="12"> Педагог-организатор</option>
-                                                            <option value="13">Педагог-психолог</option>
-                                                            <option value="14">Преподаватель</option>
-                                                            <option value="15">Преподаватель-организатор ОБЖ</option>
-                                                            <option value="16"> Руководитель физического воспитания
-                                                            </option>
-                                                            <option value="17">Социальный педагог</option>
-                                                            <option value="18"> Старший вожатый</option>
-                                                            <option value="19"> Старший воспитатель</option>
-                                                            <option value="20"> Старший инструктор-методист</option>
-                                                            <option value="21">Старший методист</option>
-                                                            <option value="22"> Старший педагог дополнительного
-                                                                образования
-                                                            </option>
-                                                            <option value="23"> Старший тренер-преподаватель</option>
-                                                            <option value="24">Тренер-преподаватель</option>
-                                                            <option value="25">Тьютор</option>
-                                                            <option value="61"> Учитель</option>
-                                                            <option value="62">начальных классов</option>
-                                                            <option value="63"> природоведения</option>
-                                                            <option value="64"> математики</option>
-                                                            <option value="65"> музыки (пение)</option>
-                                                            <option value="66"> изобразительного искусства (рисование)
-                                                            </option>
-                                                            <option value="67"> русского языка (литературы)</option>
-                                                            <option value="68"> физической культуры</option>
-                                                            <option value="69"> чеченского языка (литературы)</option>
-                                                            <option value="70"> основ религиозных культур и светской
-                                                                этики
-                                                            </option>
-                                                            <option value="71"> английского языка</option>
-                                                            <option value="72"> немецкого языка</option>
-                                                            <option value="73"> французского языка</option>
-                                                            <option value="74"> испанского языка</option>
-                                                            <option value="75"> краеведения</option>
-                                                            <option value="76"> истории</option>
-                                                            <option value="77"> основ безопасности жизнедеятельности
-                                                                (ОБЖ)
-                                                            </option>
-                                                            <option value="78"> технологии</option>
-                                                            <option value="79"> географии</option>
-                                                            <option value="80"> биологии</option>
-                                                            <option value="81"> информатики и ИКТ</option>
-                                                            <option value="82"> обществознания</option>
-                                                            <option value="83"> черчения</option>
-                                                            <option value="84"> геометрии</option>
-                                                            <option value="85"> физики</option>
-                                                        </select>
-                                                    </h1>
+								<div class="modal-overlay" id="new_vakansiya_fon" style="z-index:20;">
+									<div class="modal" id="new_vakansiya_modal">
+
+										<a class="close-modal" id="close_new_vakansiya">
+											<svg viewBox="0 0 20 20">
+												<path d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"
+												      fill="#000000"></path>
+											</svg>
+										</a><!-- close modal -->
 
 
-                                                    <div class="base-box" style="padding:0px;">
-                                                        <p class="mb-1" id="block_activ_zarplata"
-                                                           style="width:calc(50%);">
-                                                            <label class="checkbox check-alt" style="width:100%;">
-                                                                Указать зарплату
-                                                                <input class="check_check" id_voprosa="9801"
-                                                                       inpname="1" name="check[]" tema="5"
-                                                                       type="checkbox"
-                                                                       value="15508" vibor="2">
-                                                                <span></span>
-                                                            </label>
-                                                        </p>
+										<div class="modal-content" style="width:100%;">
+											<div class="my-2 mx-auto p-relative bg-white shadow-1 blue-hover"
+											     style="width: 100%; overflow: hidden; border-radius: 1px;">
+												<div class="px-2 py-2">
+													<p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px">
+														08.10.2019
+													</p>
+													<h1 class="ff-serif font-weight-normal text-black card-heading mt-0 mb-1"
+													    style="line-height: 1.25;">
+														<select id="base_dolj">
+															<option selected="" value="">Выберите должность</option>
+															<option value="1">Воспитатель</option>
+															<option value="2">Инструктор-методист</option>
+															<option value="3">Инструктор по труду</option>
+															<option value="4">Инструктор по физической культуре</option>
+															<option value="5">Концертмейстер</option>
+															<option value="6"> Логопед</option>
+															<option value="7">Мастер производственного обучения</option>
+															<option value="8">Методист</option>
+															<option value="9"> Музыкальный руководитель</option>
+															<option value="10">Педагог дополнительного образования
+															</option>
+															<option value="11"> Педагог-библиотекарь</option>
+															<option value="12"> Педагог-организатор</option>
+															<option value="13">Педагог-психолог</option>
+															<option value="14">Преподаватель</option>
+															<option value="15">Преподаватель-организатор ОБЖ</option>
+															<option value="16"> Руководитель физического воспитания
+															</option>
+															<option value="17">Социальный педагог</option>
+															<option value="18"> Старший вожатый</option>
+															<option value="19"> Старший воспитатель</option>
+															<option value="20"> Старший инструктор-методист</option>
+															<option value="21">Старший методист</option>
+															<option value="22"> Старший педагог дополнительного
+																образования
+															</option>
+															<option value="23"> Старший тренер-преподаватель</option>
+															<option value="24">Тренер-преподаватель</option>
+															<option value="25">Тьютор</option>
+															<option value="61"> Учитель</option>
+															<option value="62">начальных классов</option>
+															<option value="63"> природоведения</option>
+															<option value="64"> математики</option>
+															<option value="65"> музыки (пение)</option>
+															<option value="66"> изобразительного искусства (рисование)
+															</option>
+															<option value="67"> русского языка (литературы)</option>
+															<option value="68"> физической культуры</option>
+															<option value="69"> чеченского языка (литературы)</option>
+															<option value="70"> основ религиозных культур и светской
+																этики
+															</option>
+															<option value="71"> английского языка</option>
+															<option value="72"> немецкого языка</option>
+															<option value="73"> французского языка</option>
+															<option value="74"> испанского языка</option>
+															<option value="75"> краеведения</option>
+															<option value="76"> истории</option>
+															<option value="77"> основ безопасности жизнедеятельности
+																(ОБЖ)
+															</option>
+															<option value="78"> технологии</option>
+															<option value="79"> географии</option>
+															<option value="80"> биологии</option>
+															<option value="81"> информатики и ИКТ</option>
+															<option value="82"> обществознания</option>
+															<option value="83"> черчения</option>
+															<option value="84"> геометрии</option>
+															<option value="85"> физики</option>
+														</select>
+													</h1>
 
-                                                        <p class="mb-1" id="block_zarplata"
-                                                           style="display:none;width:calc(50%);">
-                                                            <input id="zarplata"
-                                                                   onkeypress="return  event.charCode >= 48 && event.charCode <= 57  "
-                                                                   placeholder="Пример: 25000" type="text">
-                                                        </p>
-                                                    </div>
-                                                    <select id="staj">
-                                                        <option value="0">Выберите стаж работы</option>
-                                                        <option value="1">Начало карьеры</option>
-                                                        <option value="2">1-3</option>
-                                                        <option value="3">3-5</option>
-                                                        <option value="4">5 и больше</option>
-                                                    </select>
-                                                    <p class="mb-1">
-                                                    <p class="mb-1"><b>Дополнительная информация</b>:</p>
 
-                                                    <textarea id="dop_info" maxlength="1050"></textarea>
+													<div class="base-box" style="padding:0px;">
+														<p class="mb-1" id="block_activ_zarplata"
+														   style="width:calc(50%);">
+															<label class="checkbox check-alt" style="width:100%;">
+																Указать зарплату
+																<input class="check_check" id_voprosa="9801"
+																       inpname="1" name="check[]" tema="5"
+																       type="checkbox"
+																       value="15508" vibor="2">
+																<span></span>
+															</label>
+														</p>
 
-                                                    </p>
+														<p class="mb-1" id="block_zarplata"
+														   style="display:none;width:calc(50%);">
+															<input id="zarplata"
+															       onkeypress="return  event.charCode >= 48 && event.charCode <= 57  "
+															       placeholder="Пример: 25000" type="text">
+														</p>
+													</div>
+													<select id="staj">
+														<option value="0">Выберите стаж работы</option>
+														<option value="1">Начало карьеры</option>
+														<option value="2">1-3</option>
+														<option value="3">3-5</option>
+														<option value="4">5 и больше</option>
+													</select>
+													<p class="mb-1">
+													<p class="mb-1"><b>Дополнительная информация</b>:</p>
 
-                                                    <p class="mb-1" style="margin: 0;margin-top: 7%;">
-                                                        <a class="save_vakansiya text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link"
-                                                           href="#"
-                                                           style="margin:0px;">
-                                                            Создать вакансию
-                                                        </a>
+													<textarea id="dop_info" maxlength="1050"></textarea>
 
-                                                    </p>
+													</p>
 
+													<p class="mb-1" style="margin: 0;margin-top: 7%;">
+														<a class="save_vakansiya text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link"
+														   href="#"
+														   style="margin:0px;">
+															Создать вакансию
+														</a>
 
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+													</p>
 
 
-                                <div id="result_vacancy" style="width: 100%;   display: flex;   flex-wrap: wrap;">
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
 
 
-                                </div>
+								<div id="result_vacancy" style="width: 100%;   display: flex;   flex-wrap: wrap;">
 
 
-                            </div>
-                    </form>
-                    <!----Результат(блоки с учителями)--------------->
-                    <div class="base-cards" id="base-cards">
+								</div>
 
-                    </div>
-                    <!----Результат(блоки с учителями)--------------->
-                    <!-- <div class="base-action">
-                       <button><i class="icon icon-refresh "></i>Показать еще учителей
-                       </button>
-                     </div>-->
-                </div>
-            </div>
-        </div>
-    </main>
-    <footer class="footer">
-        <div class="container">
-            <div class="footer__content"><a class="logo" href="index.php">Реестр резерва педагогических кадров Чеченской
-                Республики</a>
-                <div class="footer__copy">© 2019 Реестр резерва педагогических кадров Чеченской Республики.<span></span><a
-                        href="text.php">Политика конфиденциальности</a></div>
-            </div>
-        </div>
-    </footer>
+
+							</div>
+					</form>
+					<!----Результат(блоки с учителями)--------------->
+					<div class="base-cards" id="base-cards">
+
+					</div>
+					<!----Результат(блоки с учителями)--------------->
+					<!-- <div class="base-action">
+					   <button><i class="icon icon-refresh "></i>Показать еще учителей
+					   </button>
+					 </div>-->
+				</div>
+			</div>
+		</div>
+	</main>
+	<footer class="footer">
+		<div class="container">
+			<div class="footer__content"><a class="logo" href="index.php">Реестр резерва педагогических кадров Чеченской
+				Республики</a>
+				<div class="footer__copy">© 2019 Реестр резерва педагогических кадров Чеченской Республики.<span></span><a
+						href="text.php">Политика конфиденциальности</a></div>
+			</div>
+		</div>
+	</footer>
 
 </div>
 
