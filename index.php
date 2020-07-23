@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Config\Routes;
 use DI\ContainerBuilder;
 use Pecee\SimpleRouter\SimpleRouter;
+use Symfony\Component\Dotenv\Dotenv;
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/src/Config/settings.php';
 
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__ . '/.env');
 $container = (new ContainerBuilder())
         ->useAutowiring(true)
         ->useAnnotations(true)
@@ -18,49 +23,105 @@ SimpleRouter::setDefaultNamespace('App\Controllers');
 
 SimpleRouter::group(
         ['prefix' => Routes::BASE_ROUTE],
-        function () {
-            /**
-             * @see \App\Controllers\AreaController
-             */
-            SimpleRouter::get('/areas', 'AreaController@getAll');
-            SimpleRouter::get('/areas/{code}', 'AreaController@getByCode')->where(['code' => '[0-9]']);
+        static function () {
+            SimpleRouter::group(
+                    ['prefix' => Routes::AREAS_ROUTE],
+                    static function () {
+                        /**
+                         * @see AreaController::getAll()
+                         */
+                        SimpleRouter::get('/', 'AreaController@getAll');
+                        /**
+                         * @see AreaController::getByCode()
+                         */
+                        SimpleRouter::get('/{code}', 'AreaController@getByCode')->where(['code' => '[0-9]+']);
+                        /**
+                         * @see AreaController::getSchoolsByArea()
+                         */
+                        SimpleRouter::get('/{code}/schools', 'AreaController@getSchoolsByArea')->where(
+                                ['code' => '[0-9]+']
+                        );
+                    }
+            );
             SimpleRouter::group(
                     ['prefix' => Routes::VACANCY_ROUTE],
-                    function () {
-                        SimpleRouter::get('/getbysorting', 'VacancyController@getBySorting');
-                        SimpleRouter::post('/post', 'VacancyController@postVacancy');
-                        SimpleRouter::get('/getbyschool', 'VacancyController@getBySchool');
-                        SimpleRouter::post('/update', 'VacancyController@updateVacancy');
-                        SimpleRouter::post('/delete', 'VacancyController@deleteVacancy');
+                    static function () {
+                        /**
+                         * @see VacancyController::getSortedData()
+                         */
+                        SimpleRouter::get('/getbysorting', 'VacancyController@getSortedData');
+
+                        SimpleRouter::group(
+                                ['middleware' => \App\Middleware\AuthMiddleware::class],
+                                static function () {
+                                    /**
+                                     * @see VacancyController::postVacancy()
+                                     */
+                                    SimpleRouter::post('/', 'VacancyController@postVacancy');
+                                    /**
+                                     * @see VacancyController::getBySchool()
+                                     */
+                                    SimpleRouter::get('/getbyschool', 'VacancyController@getBySchool');
+                                    /**
+                                     * @see VacancyController::updateVacancy()
+                                     */
+                                    SimpleRouter::patch('/', 'VacancyController@updateVacancy');
+                                    /**
+                                     * @see VacancyController::deleteVacancy()
+                                     */
+                                    SimpleRouter::delete('/{id}', 'VacancyController@deleteVacancy')->where(
+                                            ['code' => '[0-9]+']
+                                    );
+                                }
+                        );
                     }
             );
             SimpleRouter::group(
                     ['prefix' => Routes::VACANCY_RESPONSE_ROUTE],
-                    function () {
-                        SimpleRouter::get('/getbyvacancyid', 'VacancyResponseController@getByVacancy');
-                        SimpleRouter::post('/postresponse', 'VacancyResponseController@postResponse');
-                        SimpleRouter::post('/delete', 'VacancyResponseController@deleteResponse');
+                    static function () {
+                        /**
+                         * @see VacancyResponseController::getByVacancy()
+                         */
+                        SimpleRouter::get('/{vacancyid}', 'VacancyResponseController@getByVacancy')->where(
+                                ['vacancyid' => '[0-9]+']
+                        );
+                        /**
+                         * @see VacancyResponseController::post()
+                         */
+                        SimpleRouter::post('/', 'VacancyResponseController@post');
+                        /**
+                         * @see VacancyResponseController::delete()
+                         */
+                        SimpleRouter::delete('/{id}', 'VacancyResponseController@delete')->where(
+                                ['id' => '[0-9]+']
+                        );
                     }
             );
             SimpleRouter::group(
                     ['prefix' => Routes::SCHOOLS_ROUTE],
-                    function () {
+                    static function () {
+                        /**
+                         * @see SchoolController::getAll()
+                         */
                         SimpleRouter::get('/', 'SchoolController@getAll');
-                        SimpleRouter::get('/getbyareacode', 'SchoolController@getByAreaCode');
-                        SimpleRouter::get('/getbyid', 'SchoolController@getById');
+                        /**
+                         * @see SchoolController::getById()
+                         */
+                        SimpleRouter::get('/{id}', 'SchoolController@getById')->where(['id' => '[0-9]+']);
                     }
             );
             SimpleRouter::group(
                     ['prefix' => Routes::POSITION_ROUTE],
-                    function () {
-                        SimpleRouter::get('/getall', 'DoljonostController@getAll');
+                    static function () {
+                        /**
+                         * @see PositionController::getAll()
+                         */
+                        SimpleRouter::get('/', 'PositionController@getAll');
                     }
             );
+
             SimpleRouter::get('/', 'IndexController@index');
         }
 );
 
-try {
-    SimpleRouter::start();
-} catch (Exception $e) {
-}
+SimpleRouter::start();

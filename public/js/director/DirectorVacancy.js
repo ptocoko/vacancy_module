@@ -301,11 +301,8 @@ class DirectorVacancy {
         });
         $(`#delete_${this.id}`).on('click', () => {
             $.ajax({
-                type: "POST",
-                url: `${baseUrl}/vacancy/delete`,
-                data: {
-                    'id': this.id
-                }
+                type: "DELETE",
+                url: `${baseUrl}/vacancy/${this.id}`
             }).done(() => {
                 $(`#div_${this.id}`).slideUp(700);
             })

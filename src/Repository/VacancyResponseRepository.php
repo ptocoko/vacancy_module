@@ -42,7 +42,7 @@ class VacancyResponseRepository extends AbstractRepository
                 ParticipantDirectorRepository::getTableName(),
                 AreaRepository::getTableName(),
                 ExperienceRepository::getTableName(),
-                QualificationRepository::getTableName(),
+                QualificationRepository::getTableName()
         );
         $stmt = $this->dbo->prepare($query);
         $stmt->execute(['id' => $vacancyId]);

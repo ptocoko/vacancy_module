@@ -20,15 +20,16 @@ abstract class AbstractController
     {
         if (!empty($data)) {
             SimpleRouter::response()->httpCode(200);
-            return json_encode($data, 0, 512);
+            SimpleRouter::response()->json($data, 0, 512);
+            return SimpleRouter::response();
         } else {
-            return $this->invalidRequest(406, 'Not Acceptable');
+            return $this->invalidRequest();
         }
     }
 
     protected function invalidRequest(int $code = 400, string $message = 'Bad request'): string
     {
         SimpleRouter::response()->httpCode($code);
-        return $message;
+        return SimpleRouter::response();
     }
 }

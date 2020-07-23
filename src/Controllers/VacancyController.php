@@ -6,7 +6,9 @@ namespace App\Controllers;
 
 use App\Repository\ParticipantDirectorRepository;
 use App\Repository\VacancyRepository;
+use App\Repository\VacancyResponseRepository;
 use Exception;
+use Pecee\Http\Response;
 use Pecee\SimpleRouter\SimpleRouter;
 
 class VacancyController extends AbstractController
@@ -16,22 +18,25 @@ class VacancyController extends AbstractController
      */
     private $vacancyRepository;
     /**
+     * @var VacancyResponseRepository
+     */
+    private $vacancyResponseRepository;
+    /**
      * @var ParticipantDirectorRepository
      */
-    private $participantDirectorRepository;
 
 
     /**
      * VacancyController constructor.
-     * @param VacancyRepository $repository
-     * @param ParticipantDirectorRepository $participantDirectorRepository
+     * @param VacancyRepository $vacancyRepository
+     * @param VacancyResponseRepository $vacancyResponseRepository
      */
     public function __construct(
-            VacancyRepository $repository,
-            ParticipantDirectorRepository $participantDirectorRepository
+            VacancyRepository $vacancyRepository,
+            VacancyResponseRepository $vacancyResponseRepository
     ) {
-        $this->vacancyRepository = $repository;
-        $this->participantDirectorRepository = $participantDirectorRepository;
+        $this->vacancyRepository = $vacancyRepository;
+        $this->vacancyResponseRepository = $vacancyResponseRepository;
     }
 
     public function getSortedData(): string
@@ -46,7 +51,7 @@ class VacancyController extends AbstractController
         }
         $experienceId = (int)$this->inputHandler->get('staid', '0');
         $offset = (int)$this->inputHandler->get('page', '0');
-        return json_encode(
+        return $this->json(
                 $this->vacancyRepository->findBySorting(
                         $areaCode,
                         $schoolId,
@@ -58,36 +63,19 @@ class VacancyController extends AbstractController
         );
     }
 
-    public function getBySchool(): string
+    public function getBySchool(): Response
     {
-        if (!empty($_SESSION['id'])) {
-            $schoolId = $this->participantDirectorRepository->findById((int)($_SESSION['id']))['schoolid'];
+        $vacancies = $this->vacancyRepository->findBySchoolId(SimpleRouter::request()->user->schoolid);
+        foreach ($vacancies as &$vacancy) {
+            $vacancy['resp'] = $this->vacancyResponseRepository->findByVacancyId((int)$vacancy['id']);
         }
-        if ($schoolId != 0) {
-            SimpleRouter::response()->header('Content-Type: application/json');
-            $vacancies = $this->vacancyRepository->findBySchoolId($schoolId);
-            foreach ($vacancies as &$vacancy) {
-                $resps = json_decode($this->vacancyResponseCotnroller->getByVacancy($vacancy['id']), true);
-                $vacancy['resp'] = $resps;
-            }
-
-            return json_encode($vacancies, 0, 8);
-        }
-
-        return $this->invalidRequest();
+        return $this->json($vacancies);
     }
 
-    public function deleteVacancy()
+
+    public function deleteVacancy(int $id): string
     {
-        $id = $this->inputHandler->post('id', 0);
-        if ($id != 0) {
-            $this->vacancyRepository->delete($id);
-            SimpleRouter::response()->httpCode(200);
-
-            return $id;
-        }
-
-        return $this->invalidRequest();
+        return $this->vacancyRepository->delete($id);
     }
 
     public function postVacancy()
@@ -153,8 +141,10 @@ class VacancyController extends AbstractController
         return $this->invalidRequest();
     }
 
-    public function vacancyExists($doljnostId = 0, $schoolId = 0): bool
-    {
+    public function vacancyExists(
+            $doljnostId = 0,
+            $schoolId = 0
+    ): bool {
         if ($schoolId == 0 && $doljnostId == 0) {
             return false;
         }

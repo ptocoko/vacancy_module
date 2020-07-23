@@ -31,19 +31,13 @@ class SchoolController extends AbstractController
 
     public function getAll(): string
     {
-        return json_encode($this->repository->findAll());
+        return $this->json($this->repository->findAll());
     }
 
 
-    public function getById(): string
+    public function getById(string $id): string
     {
-        $id = (int)$this->inputHandler->get('id', '0');
-        return json_encode($this->repository->findById($id));
+        return $this->json($this->repository->findById($id));
     }
 
-    public function getByAreaCode(): string
-    {
-        $areaCode = (int)$this->inputHandler->get('areacode', '0');
-        return json_encode($this->repository->getByAreaCode($areaCode));
-    }
 }

@@ -11,14 +11,14 @@
   },
   "require": {
     "ext-pdo": "*",
+    "ext-json": "*",
     "php-di/php-di": "^6.2",
+    "ext-openssl": "*",
     "doctrine/annotations": "^1.10",
     "ocramius/proxy-manager": "^2.2.2",
-    "ext-json": "*",
     "pecee/simple-router": "4.2.0.6",
     "ocramius/generated-hydrator": "^2.2",
     "cboden/ratchet": "^0.4.3",
-    "ext-openssl": "*",
     "symfony/dotenv": "^4.4"
   }
 }

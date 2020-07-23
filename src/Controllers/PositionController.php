@@ -28,7 +28,6 @@ class PositionController extends AbstractController
      */
     public function getAll(): string
     {
-        return 'asddd';
-        return json_encode($this->repository->findAll());
+        return $this->json($this->repository->findAll());
     }
 }

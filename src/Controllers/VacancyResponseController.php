@@ -36,13 +36,13 @@ class VacancyResponseController extends AbstractController
         return $this->invalidRequest();
     }
 
-    public function postResponse()
+    public function post()
     {
         if (!empty($_SESSION['login'])) {
             $userId = $_SESSION['id'];
             $vacanciId = $this->inputHandler->post('vid');
             if ($this->respondedAlready($userId, $vacanciId)) {
-                return $this->invalidRequest(400, 'Вы уже отправили отклик на данную вакансию');
+                return $this->invalidRequest(401, 'Вы уже отправили отклик на данную вакансию');
             }
             $response_date = time();
             $response_comment = $this->inputHandler->post('comment');
@@ -79,9 +79,8 @@ class VacancyResponseController extends AbstractController
         return $this->repository->countOfResponsesWith($userId, $vacancyId) > 0;
     }
 
-    public function deleteResponse()
+    public function delete(int $id)
     {
-        $id = $this->inputHandler->post('id', 0);
         if ($id != 0) {
             $this->repository->delete($id);
             SimpleRouter::response()->httpCode(200);

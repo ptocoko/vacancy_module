@@ -24,16 +24,17 @@ abstract class AbstractRepository
 
     public function findAll()
     {
-        $stmt = $this->dbo->query('SELECT * FROM ' . $this::getTableName());
+        $stmt = $this->dbo->query('SELECT * FROM ' . static::getTableName());
         return $stmt->fetchAll();
     }
 
     abstract public static function getTableName(): string;
 
-    public function delete(int $id): array
+    public function delete(int $id): int
     {
-        $stmt = $this->dbo->prepare(sprintf('DELETE  from %s WHERE id = :id', $this::getTableName()));
+        $stmt = $this->dbo->prepare(sprintf('DELETE  from %s WHERE id = :id', static::getTableName()));
+        var_dump($stmt);
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch();
+        return $id;
     }
 }

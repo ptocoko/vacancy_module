@@ -33,7 +33,7 @@ class SchoolRepository extends AbstractRepository
         return $stmt->fetchAll();
     }
 
-    public function findById(int $id): array
+    public function findById(string $id): array
     {
         $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE id = :id", $this::getTableName()));
         $stmt->execute([':id' => $id]);

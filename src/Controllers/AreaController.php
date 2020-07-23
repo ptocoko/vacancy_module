@@ -5,24 +5,51 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Repository\AreaRepository;
+use App\Repository\SchoolRepository;
+use Pecee\Http\Response;
 
 class AreaController extends AbstractController
 {
     private $areaRepository;
+    /**
+     * @var SchoolRepository
+     */
+    private $schoolRepository;
 
-    public function __construct(AreaRepository $areaRepository)
+    /**
+     * AreaController constructor.
+     * @param AreaRepository $areaRepository
+     * @param SchoolRepository $schoolRepository
+     */
+    public function __construct(AreaRepository $areaRepository, SchoolRepository $schoolRepository)
     {
         $this->areaRepository = $areaRepository;
+        $this->schoolRepository = $schoolRepository;
     }
 
-    public function getAll(): string
+    /**
+     * @return Response
+     */
+    public function getAll(): Response
     {
-        return $this->json($this->areaRepository->findAll());
+        return $this->json($this->areaRepository->findAll(), 200);
     }
 
-    public function getByCode(int $code): string
+    /**
+     * @param int $code
+     * @return Response
+     */
+    public function getByCode(int $code): Response
     {
-        return json_encode($this->areaRepository->findByCode($code));
+        return $this->json($this->areaRepository->findByCode($code), 200);
     }
 
+    /**
+     * @param int $code
+     * @return Response
+     */
+    public function getSchoolsByArea(int $code): Response
+    {
+        return $this->json($this->schoolRepository->getByAreaCode($code), 200);
+    }
 }
