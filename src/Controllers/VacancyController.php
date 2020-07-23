@@ -154,23 +154,25 @@ class VacancyController extends AbstractController
         return false;
     }
 
-    public function updateVacancy()
+    public function updateVacancy(int $id, ?int $paymentValue, int $positionId, int $experienceId, string $dopInfo, string $schoolId)
     {
-        $doljnostid = $this->inputHandler->post('pid', 0);
-        $stajId = $this->inputHandler->post('staid', 0);
-        $zp = 'no';
-        $temp = (int)$_POST['payment'];
-        if ($temp > 0) {
-            $zp = $temp;
-        }
-        $dopInfo = $this->inputHandler->post('dopinfo', "");
-        $id = $this->inputHandler->post('id');
-        if ($doljnostid != 0 && $stajId != 0) {
-            SimpleRouter::response()->header('Content-Type: application/json');
-            $vacancy = $this->vacancyRepository->updateVacancy($id, $doljnostid, $zp, $stajId, $dopInfo);
-            $vacancy['resp'] = [];
-            return json_encode($vacancy, JSON_PRETTY_PRINT, 512);
-        }
+        echo SimpleRouter::request()->getHeaders();
+        $this->inputHandler->parseInputs();
+//        $doljnostid = $this->inputHandler->post('pid', 0);
+//        $stajId = $this->inputHandler->post('staid', 0);
+//        $zp = 'no';
+//        $temp = (int)$_POST['payment'];
+//        if ($temp > 0) {
+//            $zp = $temp;
+//        }
+//        $dopInfo = $this->inputHandler->post('dopinfo', "");
+//        $id = $this->inputHandler->post('id');
+//        if ($doljnostid != 0 && $stajId != 0) {
+//            SimpleRouter::response()->header('Content-Type: application/json');
+//            $vacancy = $this->vacancyRepository->updateVacancy($id, $doljnostid, $zp, $stajId, $dopInfo);
+//            $vacancy['resp'] = [];
+//            return json_encode($vacancy, JSON_PRETTY_PRINT, 512);
+//        }
         return $this->invalidRequest();
     }
 }

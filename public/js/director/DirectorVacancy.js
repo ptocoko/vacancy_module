@@ -258,8 +258,8 @@ class DirectorVacancy {
                 if (this.hasBeenChanged(staj, dopInfo, pid, salary)) {
                     if (this.check(pid, staj)) {
                         $.ajax({
-                            type: "POST",
-                            url: `${baseUrl}/vacancy/update`,
+                            type: "PATCH",
+                            url: `${baseUrl}/vacancies/`,
                             data: {
                                 'id': this.id,
                                 'payment': salary,
@@ -302,7 +302,7 @@ class DirectorVacancy {
         $(`#delete_${this.id}`).on('click', () => {
             $.ajax({
                 type: "DELETE",
-                url: `${baseUrl}/vacancy/${this.id}`
+                url: `${baseUrl}/vacancies/${this.id}`
             }).done(() => {
                 $(`#div_${this.id}`).slideUp(700);
             })
@@ -336,11 +336,8 @@ class DirectorVacancy {
     };
     deleteRespHandler = (id) => {
         $.ajax({
-            type: "POST",
-            url: `${baseUrl}/vacancyresponse/delete`,
-            data: {
-                'id': id
-            }
+            type: "DELETE",
+            url: `${baseUrl}/vacancy_responses/${id}`
         }).done(() => {
             $(`#li_${id}`).fadeOut(500);
             this.resps = this.resps.filter(x => x.response_id != id);

@@ -18,7 +18,7 @@ async function getDoljnosti() {
 }
 
 async function getVacanciesBySchoolId() {
-    const {data} = await axios.get(`${baseUrl}/vacancy/getbyschool`);
+    const {data} = await axios.get(`${baseUrl}/vacancies/getbyschool`);
     return data;
 }
 

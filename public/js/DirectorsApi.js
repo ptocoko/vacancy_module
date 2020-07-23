@@ -125,7 +125,7 @@ function setModalHandlers() {
         if (check(pid, staj)) {
             $.ajax({
                 type: "POST",
-                url: `${baseUrl}/vacancy/post`,
+                url: `${baseUrl}/vacancies/`,
                 data: {
                     'payment': salary,
                     'pid': pid,
