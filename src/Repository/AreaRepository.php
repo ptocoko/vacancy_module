@@ -17,8 +17,9 @@ class AreaRepository extends AbstractRepository
 
     public function findAll(): array
     {
+        echo 'asdasd';
+        var_dump($this->dbo);
         $stmt = $this->dbo->query("SELECT * FROM {$this::getTableName()} WHERE Actualcode = ''");
-        var_dump($this->dbo->errorInfo());
         return $stmt->fetchAll();
     }
 

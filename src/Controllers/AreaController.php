@@ -17,7 +17,7 @@ class AreaController extends AbstractController
 
     public function getAll(): string
     {
-        return json_encode($this->areaRepository->findAll());
+        return $this->json($this->areaRepository->findAll());
     }
 
     public function getByCode(int $code): string

@@ -74,7 +74,7 @@ class VacancyController extends AbstractController
             return json_encode($vacancies, 0, 8);
         }
 
-        return $this->errorResponse();
+        return $this->invalidRequest();
     }
 
     public function deleteVacancy()
@@ -87,7 +87,7 @@ class VacancyController extends AbstractController
             return $id;
         }
 
-        return $this->errorResponse();
+        return $this->invalidRequest();
     }
 
     public function postVacancy()
@@ -100,27 +100,27 @@ class VacancyController extends AbstractController
                     512
             )
             ) {
-                return $this->errorResponse(
+                return $this->invalidRequest(
                         401,
                         'Пожалуйста зайдите в свой личный кабинет или зарегестрируйтесь'
                 );
             }
         } catch (Exception $e) {
-            return $this->errorResponse(400, $e->getMessage());
+            return $this->invalidRequest(400, $e->getMessage());
         }
         try {
             if (!$school = json_decode($this->schoolController->getById($director['schoolid']), true, 512)) {
-                return $this->errorResponse(
+                return $this->invalidRequest(
                         400,
                         'В вашем личном кабинете не установлена школа'
                 );
             }
         } catch (Exception $e) {
-            return $this->errorResponse(400, $e->getMessage());
+            return $this->invalidRequest(400, $e->getMessage());
         }
         $doljnostid = $this->inputHandler->post('pid', 0);
         if ($this->vacancyExists($doljnostid, $school['id'])) {
-            return $this->errorResponse(400, 'Данная вакансия уже существует');
+            return $this->invalidRequest(400, 'Данная вакансия уже существует');
         }
         $stajId = $this->inputHandler->post('staid', 0);
         $zp = 'no';
@@ -146,11 +146,11 @@ class VacancyController extends AbstractController
                 $vacancy['resp'] = [];
                 return json_encode($vacancy, JSON_PRETTY_PRINT, 4);
             } catch (Exception $e) {
-                return $this->errorResponse(400, $e->getMessage());
+                return $this->invalidRequest(400, $e->getMessage());
             }
         }
 
-        return $this->errorResponse();
+        return $this->invalidRequest();
     }
 
     public function vacancyExists($doljnostId = 0, $schoolId = 0): bool
@@ -181,6 +181,6 @@ class VacancyController extends AbstractController
             $vacancy['resp'] = [];
             return json_encode($vacancy, JSON_PRETTY_PRINT, 512);
         }
-        return $this->errorResponse();
+        return $this->invalidRequest();
     }
 }

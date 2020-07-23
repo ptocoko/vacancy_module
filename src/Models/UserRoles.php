@@ -4,7 +4,7 @@
 namespace App\Models;
 
 
-class UserTypes
+class UserRoles
 {
     public const TEACHER = 1;
     public const DIRECTOR = 2;

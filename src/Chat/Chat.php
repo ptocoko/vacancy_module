@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\LiveScores;
+namespace App\Chat;
 
 
 use App\Config\MessageTypes;

@@ -39,7 +39,7 @@ class ParticipantDirectorController extends AbstractController
         } elseif (!empty($_SESSION['id'])) {
             return json_encode($this->repository->findById((int)$_SESSION['id']));
         } else {
-            return $this->errorResponse(404, 'Not found');
+            return $this->invalidRequest(404, 'Not found');
         }
     }
 }

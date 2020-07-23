@@ -33,7 +33,7 @@ class VacancyResponseController extends AbstractController
             return json_encode($this->repository->findByVacancyId($vacancyId));
         }
 
-        return $this->errorResponse();
+        return $this->invalidRequest();
     }
 
     public function postResponse()
@@ -42,7 +42,7 @@ class VacancyResponseController extends AbstractController
             $userId = $_SESSION['id'];
             $vacanciId = $this->inputHandler->post('vid');
             if ($this->respondedAlready($userId, $vacanciId)) {
-                return $this->errorResponse(400, 'Вы уже отправили отклик на данную вакансию');
+                return $this->invalidRequest(400, 'Вы уже отправили отклик на данную вакансию');
             }
             $response_date = time();
             $response_comment = $this->inputHandler->post('comment');
@@ -60,14 +60,14 @@ class VacancyResponseController extends AbstractController
                             )
                     );
                 } catch (Exception $e) {
-                    return $this->errorResponse();
+                    return $this->invalidRequest();
                 }
             } else {
                 SimpleRouter::response()->httpCode(400);
                 return 'Bad request';
             }
         } else {
-            return $this->errorResponse(401, 'Пожалуйста зайдите в свой личный кабинет или зарегестрируйтесь');
+            return $this->invalidRequest(401, 'Пожалуйста зайдите в свой личный кабинет или зарегестрируйтесь');
         }
     }
 
@@ -87,6 +87,6 @@ class VacancyResponseController extends AbstractController
             SimpleRouter::response()->httpCode(200);
             return $id;
         }
-        return $this->errorResponse();
+        return $this->invalidRequest();
     }
 }

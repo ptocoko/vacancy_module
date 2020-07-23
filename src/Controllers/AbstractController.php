@@ -16,13 +16,19 @@ abstract class AbstractController
      */
     protected $inputHandler;
 
-    protected function errorResponse(int $code = 400, string $message = 'Bad request'): string
+    protected function json(array $data, int $httpResponseCode = 200)
+    {
+        if (!empty($data)) {
+            SimpleRouter::response()->httpCode(200);
+            return json_encode($data, 0, 512);
+        } else {
+            return $this->invalidRequest(406, 'Not Acceptable');
+        }
+    }
+
+    protected function invalidRequest(int $code = 400, string $message = 'Bad request'): string
     {
         SimpleRouter::response()->httpCode($code);
         return $message;
-    }
-
-    protected function json(array $data, int $httpResponseCode)
-    {
     }
 }
