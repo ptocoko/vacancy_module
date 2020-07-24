@@ -29,7 +29,7 @@ class VacancyRepository extends AbstractRepository
      * @param int $offset
      * @return array
      */
-    public function findBySorting(
+    public function findBy(
             int $areaCode,
             string $schoolId,
             int $positionId,
@@ -61,19 +61,24 @@ class VacancyRepository extends AbstractRepository
         if ($areaCode !== 0) {
             $cond = "v.areacode = {$areaCode}";
             $this->constructSql($sql, $cond);
-        } elseif ($schoolId !== 0) {
+        }
+        if ($schoolId !== '0') {
             $cond = "v.schoolid = {$schoolId}";
             $this->constructSql($sql, $cond);
-        } elseif ($positionId !== 0) {
+        }
+        if ($positionId !== 0) {
             $cond = "v.doljnost_id = {$positionId}";
             $this->constructSql($sql, $cond);
-        } elseif ($payment !== null) {
+        }
+        if ($payment !== null) {
             $cond = "v.zp BETWEEN " . $payment['min'] . " AND " . $payment['max'];
             $this->constructSql($sql, $cond);
-        } elseif ($payment === null) {
+        }
+        if ($payment === null) {
             $cond = "v.zp = 'no'";
             $this->constructSql($sql, $cond);
-        } elseif ($experienceId != 0) {
+        }
+        if ($experienceId !== 0) {
             $cond = "v.staj_id = {$experienceId}";
             $this->constructSql($sql, $cond);
         }
@@ -100,8 +105,9 @@ class VacancyRepository extends AbstractRepository
         if ($this->flag == 0) {
             $this->flag = 1;
             $sql .= " WHERE " . $cond;
+        } else {
+            $sql .= " AND " . $cond;
         }
-        $sql .= " AND " . $cond;
     }
 
     /**
@@ -143,14 +149,13 @@ class VacancyRepository extends AbstractRepository
      */
     public function countOfVacanciesWith(int $positionId, string $schoolId): int
     {
-        $stmt = $this->dbo->query(
-                sprintf(
-                        "SELECT COUNT(*) FROM %s WHERE doljnost_id = %d AND schoolid = %s",
-                        $this::getTableName(),
-                        $positionId,
-                        $schoolId
-                )
+        $sql = sprintf(
+                "SELECT COUNT(*) FROM %s WHERE doljnost_id = %d AND schoolid = %s",
+                $this::getTableName(),
+                $positionId,
+                $schoolId
         );
+        $stmt = $this->dbo->query($sql);
         return $stmt->fetchColumn();
     }
 
@@ -244,30 +249,36 @@ class VacancyRepository extends AbstractRepository
      */
     public function updateVacancy(
             int $id,
-            int $positionId,
-            int $paymentValue,
+            ?int $positionId,
+            ?int $paymentValue,
             int $experienceId,
             string $dopInfo
     ): array {
+        if ($paymentValue === null) {
+            $paymentValue = 'no';
+        }
+        $params = [
+                'zp' => $paymentValue,
+                'staj_id' => $experienceId,
+        ];
+        if ($positionId !== null) {
+            $params['doljnost_id'] = $positionId;
+        }
+        if (!empty($dopInfo)) {
+            $params['dop_info'] = $dopInfo;
+        }
         $sql = sprintf(
                 "UPDATE %s
-                        SET doljnost_id = :positionId,
-                            zp          = :paymentValue,
-                            staj_id     = :experienceId,
-                            dop_info    = :dopInfo
-                        WHERE id = :id",
+                        SET ",
                 $this::getTableName()
         );
-        $stmt = $this->dbo->prepare($sql);
-        $stmt->execute(
-                [
-                        'positionId' => $positionId,
-                        'paymentValue' => $paymentValue,
-                        'experienceId' => $experienceId,
-                        'dopInfo' => $dopInfo,
-                        'id' => $id
-                ]
-        );
+        foreach ($params as $key => $value) {
+            $sql .= " {$key} = '{$value}',";
+        }
+        $sql = trim($sql, ',');
+        $sql .= sprintf(" WHERE id = %s", $id);
+        $stmt = $this->dbo->query($sql);
+        $stmt->execute();
         return $this->findById($id);
     }
 }

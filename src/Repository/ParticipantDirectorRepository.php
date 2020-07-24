@@ -16,7 +16,7 @@ use DI\Annotation\Injectable;
 class ParticipantDirectorRepository extends AbstractRepository
 {
 
-    public function findById(int $id): User
+    public function findById(int $id): ?User
     {
         $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE id = :id", $this::getTableName()));
         $stmt->execute([':id' => $id]);

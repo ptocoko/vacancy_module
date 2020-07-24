@@ -46,7 +46,7 @@ async function sortVacancies() {
         params = {...params, page: vacancyController.counter};
     }
     localStorage.params = JSON.stringify(params);
-    const {data} = await axios.get(`${baseUrl}/vacancy/getbysorting`, {
+    const {data} = await axios.get(`${baseUrl}/vacancies/get_sorted_vacancies`, {
         cancelToken: new CancelToken(function executor(c) {
             cancel = c;
         }), params

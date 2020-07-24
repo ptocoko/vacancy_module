@@ -33,7 +33,6 @@ abstract class AbstractRepository
     public function delete(int $id): int
     {
         $stmt = $this->dbo->prepare(sprintf('DELETE  from %s WHERE id = :id', static::getTableName()));
-        var_dump($stmt);
         $stmt->execute([':id' => $id]);
         return $id;
     }

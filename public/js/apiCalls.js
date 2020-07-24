@@ -13,12 +13,16 @@ const getSchools = async () => {
 };
 
 async function getDoljnosti() {
-    const {data} = await axios.get(`${baseUrl}/positions`);
-    return data;
+    try {
+        const {data} = await axios.get(`${baseUrl}/positions`);
+        return data;
+    } catch (e) {
+        throw e;
+    }
 }
 
 async function getVacanciesBySchoolId() {
-    const {data} = await axios.get(`${baseUrl}/vacancies/getbyschool`);
+    const data = await axios.get(`${baseUrl}/vacancies/getbyschool`);
     return data;
 }
 

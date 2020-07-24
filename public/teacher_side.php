@@ -99,7 +99,6 @@
                                        type="checkbox"><span></span>Без указанной зарплаты
                             </label>
                             <label><span>Зарплата</span>
-
                                 <input id="pay-range" type="text">
                             </label>
                         </div>

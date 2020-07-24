@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Config\Routes;
+use App\Middleware\AuthMiddleware;
 use DI\ContainerBuilder;
 use Pecee\SimpleRouter\SimpleRouter;
 use Symfony\Component\Dotenv\Dotenv;
@@ -47,32 +48,46 @@ SimpleRouter::group(
                     ['prefix' => Routes::VACANCY_ROUTE],
                     static function () {
                         /**
-                         * @see VacancyController::getSortedData()
+                         * @see VacancyController::getSortedVacancies()
                          */
-                        SimpleRouter::get('/getbysorting', 'VacancyController@getSortedData');
-
-                        SimpleRouter::group(
-                                ['middleware' => \App\Middleware\AuthMiddleware::class],
-                                static function () {
-                                    /**
-                                     * @see VacancyController::postVacancy()
-                                     */
-                                    SimpleRouter::post('/', 'VacancyController@postVacancy');
-                                    /**
-                                     * @see VacancyController::getBySchool()
-                                     */
-                                    SimpleRouter::get('/getbyschool', 'VacancyController@getBySchool');
-                                    /**
-                                     * @see VacancyController::updateVacancy()
-                                     */
-                                    SimpleRouter::patch('/', 'VacancyController@updateVacancy');
-                                    /**
-                                     * @see VacancyController::deleteVacancy()
-                                     */
-                                    SimpleRouter::delete('/{id}', 'VacancyController@deleteVacancy')->where(
-                                            ['code' => '[0-9]+']
-                                    );
-                                }
+                        SimpleRouter::get('/get_sorted_vacancies', 'VacancyController@getSortedVacancies');
+                    }
+            );
+            SimpleRouter::group(
+                    ['middleware' => AuthMiddleware::class],
+                    static function () {
+                        /**
+                         * @see VacancyController::postVacancy()
+                         */
+                        SimpleRouter::post(Routes::VACANCY_ROUTE . '/', 'VacancyController@postVacancy');
+                        /**
+                         * @see VacancyController::getBySchool()
+                         */
+                        SimpleRouter::get(Routes::VACANCY_ROUTE . '/getbyschool', 'VacancyController@getBySchool');
+                        /**
+                         * @see VacancyController::updateVacancy()
+                         */
+                        SimpleRouter::patch(Routes::VACANCY_ROUTE . '/{id}', 'VacancyController@updateVacancy')->where(
+                                ['code' => '[0-9]+']
+                        );
+                        /**
+                         * @see VacancyController::deleteVacancy()
+                         */
+                        SimpleRouter::delete(Routes::VACANCY_ROUTE . '/{id}', 'VacancyController@deleteVacancy')->where(
+                                ['code' => '[0-9]+']
+                        );
+                        /**
+                         * @see VacancyResponseController::post()
+                         */
+                        SimpleRouter::post(Routes::VACANCY_RESPONSE_ROUTE . '/', 'VacancyResponseController@post');
+                        /**
+                         * @see VacancyResponseController::delete()
+                         */
+                        SimpleRouter::delete(
+                                Routes::VACANCY_RESPONSE_ROUTE . '/{id}',
+                                'VacancyResponseController@delete'
+                        )->where(
+                                ['id' => '[0-9]+']
                         );
                     }
             );
@@ -84,16 +99,6 @@ SimpleRouter::group(
                          */
                         SimpleRouter::get('/{vacancyid}', 'VacancyResponseController@getByVacancy')->where(
                                 ['vacancyid' => '[0-9]+']
-                        );
-                        /**
-                         * @see VacancyResponseController::post()
-                         */
-                        SimpleRouter::post('/', 'VacancyResponseController@post');
-                        /**
-                         * @see VacancyResponseController::delete()
-                         */
-                        SimpleRouter::delete('/{id}', 'VacancyResponseController@delete')->where(
-                                ['id' => '[0-9]+']
                         );
                     }
             );

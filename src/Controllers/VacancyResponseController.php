@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controllers;
 
@@ -24,35 +25,28 @@ class VacancyResponseController extends AbstractController
         $this->repository = $repository;
     }
 
-    public function getByVacancy($id = 0)
+    public function getByVacancy(int $vacancyId)
     {
-        $vacancyId = $id == 0 ? $this->inputHandler->get('vid') : $id;
-        if ($vacancyId != 0) {
-            SimpleRouter::response()->httpCode(200);
-
-            return json_encode($this->repository->findByVacancyId($vacancyId));
-        }
-
-        return $this->invalidRequest();
+        return $this->json($this->repository->findByVacancyId($vacancyId));
     }
 
     public function post()
     {
         if (!empty($_SESSION['login'])) {
             $userId = $_SESSION['id'];
-            $vacanciId = $this->inputHandler->post('vid');
-            if ($this->respondedAlready($userId, $vacanciId)) {
-                return $this->invalidRequest(401, 'Вы уже отправили отклик на данную вакансию');
+            $vacancyId = $this->inputHandler->post('vid');
+            if ($this->respondedAlready($userId, $vacancyId)) {
+                return $this->invalidRequest(407, 'Вы уже отправили отклик на данную вакансию');
             }
             $response_date = time();
             $response_comment = $this->inputHandler->post('comment');
             $rday = date("d.m.Y");
-            if ($userId && $vacanciId) {
+            if ($userId && $vacancyId) {
                 SimpleRouter::response()->httpCode(201);
                 try {
                     return json_encode(
                             $this->repository->saveResponse(
-                                    $vacanciId,
+                                    $vacancyId,
                                     $userId,
                                     $response_date,
                                     $response_comment,
@@ -73,19 +67,11 @@ class VacancyResponseController extends AbstractController
 
     private function respondedAlready($userId, $vacancyId): bool
     {
-        if ($userId == 0 && $vacancyId == 0) {
-            return false;
-        }
         return $this->repository->countOfResponsesWith($userId, $vacancyId) > 0;
     }
 
-    public function delete(int $id)
+    public function delete(int $id): string
     {
-        if ($id != 0) {
-            $this->repository->delete($id);
-            SimpleRouter::response()->httpCode(200);
-            return $id;
-        }
-        return $this->invalidRequest();
+        return (string)$this->repository->delete($id);
     }
 }

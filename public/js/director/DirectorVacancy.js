@@ -202,22 +202,6 @@ class DirectorVacancy {
         return true;
     }
 
-    hasBeenChanged = (staj, dopinfo, pid, paymentValue) => {
-        let output = false;
-        if (staj != this.stajId) {
-            output = true;
-        }
-        if (dopinfo != this.dopInfo) {
-            output = true;
-        }
-        if (pid != this.doljnost) {
-            output = true;
-        }
-        if (paymentValue != this.zp) {
-            output = true;
-        }
-        return output;
-    };
     updateVacancy = (res) => {
         this.date = res.date_insert;
         this.doljnost = res.doljnost_id;
@@ -235,7 +219,7 @@ class DirectorVacancy {
         const sliderElemInstance = salaryElem.data('ionRangeSlider');
         salaryElem.on('change', (e) => {
             if (e.target.value == 0) {
-                salary = 'no'
+                salary = null
             } else {
                 salary = e.target.value
             }
@@ -246,7 +230,7 @@ class DirectorVacancy {
                 from: 0,
                 disable: disable
             });
-            salary = 'no';
+            salary = null;
         });
         $(`#close_modal_${this.id}`).on('click', () => this.modalClosing());
         $(`#update_${this.id}`).on('click', (e) => {
@@ -255,32 +239,22 @@ class DirectorVacancy {
             const dopInfo = $('#dopinfo').val();
             const pid = $('#base_dolj').val();
             if (!this.resps.length) {
-                if (this.hasBeenChanged(staj, dopInfo, pid, salary)) {
-                    if (this.check(pid, staj)) {
-                        $.ajax({
-                            type: "PATCH",
-                            url: `${baseUrl}/vacancies/`,
-                            data: {
-                                'id': this.id,
-                                'payment': salary,
-                                'pid': pid,
-                                'staid': staj,
-                                'dopinfo': dopInfo,
-                                'schoolid': this.schoolid
-                            }
-                        }).fail(jqXHR => {
-                            $('.modal-content').html(this.badModal(`Ошибка ${jqXHR.status} ${jqXHR.responseText}`)).after(() => this.modalCenter());
-                            setTimeout(() => this.modalClosing(), 1300);
-                        }).done((data) => {
-                            this.updateVacancy(data);
-                            $('.modal-content').html(this.okModal("Ваши изменения успешно сохранены")).after(() => this.modalCenter());
-                            setTimeout(() => this.modalClosing(), 1300);
-                            $(`#p_${this.id}`).html(`${this.date} ${this.getDoljnost()} откликнулись: <b>${this.resps.length}</b>`);
-                        });
-                    }
-                } else {
-                    $('.modal-content').html(this.okModal("Ваши изменения успешно сохранены")).after(() => this.modalCenter());
-                    setTimeout(() => this.modalClosing(), 1300);
+                if (this.check(pid, staj)) {
+                    axios.patch(`${baseUrl}/vacancies/${this.id}`, {
+                        pid: pid === this.doljnost ? null : pid,
+                        staid: staj,
+                        dopinfo: dopInfo,
+                        payment: salary
+                    }).catch(error => {
+                        $('.modal-content').html(this.badModal(`Ошибка ${error.response.status} ${error.response.data.reason}`)).after(() => this.modalCenter());
+                        setTimeout(() => this.modalClosing(), 1300);
+                    }).then(({data}) => {
+                        console.log(data);
+                        this.updateVacancy(data);
+                        $('.modal-content').html(this.okModal("Ваши изменения успешно сохранены")).after(() => this.modalCenter());
+                        setTimeout(() => this.modalClosing(), 1300);
+                        $(`#p_${this.id}`).html(`${this.date} ${this.getDoljnost()} откликнулись: <b>${this.resps.length}</b>`);
+                    });
                 }
             } else {
                 $('.modal-content').html(this.badModal(`На вакансию уже откликнулись данные нельзя менять`)).after(() => this.modalCenter());
@@ -300,12 +274,9 @@ class DirectorVacancy {
                 .slideToggle(500);
         });
         $(`#delete_${this.id}`).on('click', () => {
-            $.ajax({
-                type: "DELETE",
-                url: `${baseUrl}/vacancies/${this.id}`
-            }).done(() => {
+            axios.delete(`${baseUrl}/vacancies/${this.id}`).then(() => {
                 $(`#div_${this.id}`).slideUp(700);
-            })
+            });
         });
         $(`#edit_${this.id}`).on('click', (e) => {
             e.preventDefault();
@@ -335,20 +306,18 @@ class DirectorVacancy {
         })
     };
     deleteRespHandler = (id) => {
-        $.ajax({
-            type: "DELETE",
-            url: `${baseUrl}/vacancy_responses/${id}`
-        }).done(() => {
-            $(`#li_${id}`).fadeOut(500);
-            this.resps = this.resps.filter(x => x.response_id != id);
-            $(`#resps_${this.id}`).text(this.resps.length);
-            DirectorVacancy.respslength -= 1;
-            $('#vacancy_count').text(getRightSting(DirectorVacancy.respslength));
-            this.vacancyModalFon.removeClass("active");
-            this.vacancyModal.removeClass("active");
-            $('body').css('overflow', 'auto');
-            setTimeout(() => this.vacancyModal.html(''), 500);
-        })
+        axios.delete(`${baseUrl}/vacancy_responses/${id}`)
+            .then(() => {
+                $(`#li_${id}`).fadeOut(500);
+                this.resps = this.resps.filter(x => x.response_id != id);
+                $(`#resps_${this.id}`).text(this.resps.length);
+                DirectorVacancy.respslength -= 1;
+                $('#vacancy_count').text(getRightSting(DirectorVacancy.respslength));
+                this.vacancyModalFon.removeClass("active");
+                this.vacancyModal.removeClass("active");
+                $('body').css('overflow', 'auto');
+                setTimeout(() => this.vacancyModal.html(''), 500);
+            });
     };
     renderDirectorSide = (blockId) => {
         let b = $(`<div class="accordion name" id="div_${this.id}" style="text-align: left; margin-top: 0.3rem"></div>`);

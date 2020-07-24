@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controllers;
 
@@ -7,7 +8,6 @@ namespace App\Controllers;
 use App\Repository\ParticipantDirectorRepository;
 use App\Repository\VacancyRepository;
 use App\Repository\VacancyResponseRepository;
-use Exception;
 use Pecee\Http\Response;
 use Pecee\SimpleRouter\SimpleRouter;
 
@@ -39,20 +39,20 @@ class VacancyController extends AbstractController
         $this->vacancyResponseRepository = $vacancyResponseRepository;
     }
 
-    public function getSortedData(): string
+    public function getSortedVacancies(): Response
     {
-        $areaCode = (int)$this->inputHandler->get('ac', '0');
-        $schoolId = (int)$this->inputHandler->get('schid', '0');
-        $positionId = (int)$this->inputHandler->get('pid', '0');
-        $payment['min'] = (int)$this->inputHandler->get('pmin', '0');
-        $payment['max'] = (int)$this->inputHandler->get('pmax', '0');
+        $areaCode = (int)$this->inputHandler->get('ac')->getValue();
+        $schoolId = (string)$this->inputHandler->get('schid')->getValue();
+        $positionId = (int)$this->inputHandler->get('pid')->getValue();
+        $payment['min'] = (int)$this->inputHandler->get('pmin')->getValue();
+        $payment['max'] = (int)$this->inputHandler->get('pmax')->getValue();
         if ($payment['min'] === 0 && $payment['max'] === 0) {
             $payment = null;
         }
-        $experienceId = (int)$this->inputHandler->get('staid', '0');
-        $offset = (int)$this->inputHandler->get('page', '0');
+        $experienceId = (int)$this->inputHandler->get('staid')->getValue();
+        $offset = (int)$this->inputHandler->get('page')->getValue();
         return $this->json(
-                $this->vacancyRepository->findBySorting(
+                $this->vacancyRepository->findBy(
                         $areaCode,
                         $schoolId,
                         $positionId,
@@ -72,107 +72,58 @@ class VacancyController extends AbstractController
         return $this->json($vacancies);
     }
 
-
     public function deleteVacancy(int $id): string
     {
-        return $this->vacancyRepository->delete($id);
+        return (string)$this->vacancyRepository->delete($id);
     }
 
     public function postVacancy()
     {
-        try {
-            if (!$director
-                    = json_decode(
-                    $this->participantDirectorController->getById(),
-                    true,
-                    512
-            )
-            ) {
-                return $this->invalidRequest(
-                        401,
-                        'Пожалуйста зайдите в свой личный кабинет или зарегестрируйтесь'
-                );
-            }
-        } catch (Exception $e) {
-            return $this->invalidRequest(400, $e->getMessage());
+        $positionId = (int)$this->inputHandler->post('pid')->getValue();
+        if ($this->vacancyExists($positionId, SimpleRouter::request()->user->schoolid)) {
+            return $this->invalidRequest(406, 'Данная вакансия уже существует');
         }
-        try {
-            if (!$school = json_decode($this->schoolController->getById($director['schoolid']), true, 512)) {
-                return $this->invalidRequest(
-                        400,
-                        'В вашем личном кабинете не установлена школа'
-                );
-            }
-        } catch (Exception $e) {
-            return $this->invalidRequest(400, $e->getMessage());
-        }
-        $doljnostid = $this->inputHandler->post('pid', 0);
-        if ($this->vacancyExists($doljnostid, $school['id'])) {
-            return $this->invalidRequest(400, 'Данная вакансия уже существует');
-        }
-        $stajId = $this->inputHandler->post('staid', 0);
-        $zp = 'no';
-        $temp = (int)$_POST['payment'];
-        if ($temp > 0) {
-            $zp = $temp;
-        }
-        $dopInfo = $this->inputHandler->post('dopinfo', "");
+        $experienceId = (int)$this->inputHandler->post('staid')->getValue();
+        $paymentAmount = $this->inputHandler->post('payment')->getValue(
+        ) === null ? 'no' : (int)$this->inputHandler->post('payment')->getValue();
+        $dopInfo = $this->inputHandler->post('dopinfo')->getValue();
         $dateInsert = date("d.m.Y");
-        if ($doljnostid != 0 && $stajId != 0) {
-            try {
-                SimpleRouter::response()->header('Content-Type: application/json');
-                $vacancy = $this->vacancyRepository->saveVacancy(
-                        $doljnostid,
-                        $zp,
-                        $stajId,
-                        $dopInfo,
-                        $director['id'],
-                        $director['schoolid'],
-                        $school['AreaCode'],
-                        $dateInsert
-                );
-                $vacancy['resp'] = [];
-                return json_encode($vacancy, JSON_PRETTY_PRINT, 4);
-            } catch (Exception $e) {
-                return $this->invalidRequest(400, $e->getMessage());
-            }
+        if ($positionId !== 0 && $experienceId !== 0) {
+            $vacancy = $this->vacancyRepository->saveVacancy(
+                    $positionId,
+                    $paymentAmount,
+                    $experienceId,
+                    $dopInfo,
+                    SimpleRouter::request()->user->id,
+                    SimpleRouter::request()->user->schoolid,
+                    SimpleRouter::request()->user->areas,
+                    $dateInsert
+            );
+            $vacancy['resp'] = [];
+            return $this->json($vacancy);
         }
-
         return $this->invalidRequest();
     }
 
     public function vacancyExists(
-            $doljnostId = 0,
-            $schoolId = 0
+            int $positionId,
+            string $schoolId
     ): bool {
-        if ($schoolId == 0 && $doljnostId == 0) {
-            return false;
-        }
-        if ($this->vacancyRepository->countOfVacanciesWith($doljnostId, $schoolId) > 0) {
-            return true;
-        }
-        return false;
+        return $this->vacancyRepository->countOfVacanciesWith($positionId, $schoolId) > 0;
     }
 
-    public function updateVacancy(int $id, ?int $paymentValue, int $positionId, int $experienceId, string $dopInfo, string $schoolId)
+    public function updateVacancy(int $id): Response
     {
-        echo SimpleRouter::request()->getHeaders();
-        $this->inputHandler->parseInputs();
-//        $doljnostid = $this->inputHandler->post('pid', 0);
-//        $stajId = $this->inputHandler->post('staid', 0);
-//        $zp = 'no';
-//        $temp = (int)$_POST['payment'];
-//        if ($temp > 0) {
-//            $zp = $temp;
-//        }
-//        $dopInfo = $this->inputHandler->post('dopinfo', "");
-//        $id = $this->inputHandler->post('id');
-//        if ($doljnostid != 0 && $stajId != 0) {
-//            SimpleRouter::response()->header('Content-Type: application/json');
-//            $vacancy = $this->vacancyRepository->updateVacancy($id, $doljnostid, $zp, $stajId, $dopInfo);
-//            $vacancy['resp'] = [];
-//            return json_encode($vacancy, JSON_PRETTY_PRINT, 512);
-//        }
-        return $this->invalidRequest();
+        $params = json_decode(file_get_contents("php://input"), true);
+        $paymentValue = $params['payment'];
+        $positionId = $params['pid'];
+        $experienceId = $params['staid'];
+        $dopInfo = $params['dopinfo'];
+        if ($positionId !== null && $this->vacancyExists((int)$positionId, SimpleRouter::request()->user->schoolid)) {
+            return $this->invalidRequest(406, "Такая вакансия уже существует");
+        }
+        $vacancy = $this->vacancyRepository->updateVacancy($id, $positionId, $paymentValue, $experienceId, $dopInfo);
+        $vacancy['resp'] = [];
+        return $this->json($vacancy, 200);
     }
 }

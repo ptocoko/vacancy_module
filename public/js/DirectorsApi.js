@@ -20,7 +20,7 @@ newVcButton.on('click', function (e) {
     newVcModalFon.addClass('active');
     newVcModal.addClass('active');
     $('body').css('overflow', 'hidden');
-})
+});
 
 function setModalValues() {
     $('#staj').styler({
@@ -28,19 +28,20 @@ function setModalValues() {
             $('.jq-selectbox__dropdown ul').scrollbar();
         }
     });
-    getDoljnosti().then(res => {
-        res.map(function (value) {
-            $('#base_dolj').append(value.typedoljnostid !== '1' ?
-                `<option id="dolj${value.id}" value="${value.id}">${value.name}</option>` :
-                `<option id="dolj${value.id}" value="${value.id}">Учитель ${value.name}</option>`
-            );
-        })
-        $('#base_dolj').styler({
-            onFormStyled: function () {
-                $('.jq-selectbox__dropdown ul').scrollbar();
-            }
+    getDoljnosti()
+        .then(res => {
+            res.map(function (value) {
+                $('#base_dolj').append(value.typedoljnostid !== '1' ?
+                    `<option id="dolj${value.id}" value="${value.id}">${value.name}</option>` :
+                    `<option id="dolj${value.id}" value="${value.id}">Учитель ${value.name}</option>`
+                );
+            });
+            $('#base_dolj').styler({
+                onFormStyled: function () {
+                    $('.jq-selectbox__dropdown ul').scrollbar();
+                }
+            });
         });
-    });
     $(`#salary`).ionRangeSlider({
         type: "single",
         skin: "round",
@@ -49,7 +50,7 @@ function setModalValues() {
         min: 0,
         max: 100000,
         postfix: " &#8381;",
-    })
+    });
     $(`#salary_check`).prop('checked', true);
 }
 
@@ -65,14 +66,14 @@ function check(pid, staid) {
         $('#error_no_dolj').slideToggle();
         setTimeout(function () {
             $('#error_no_dolj').slideToggle();
-        }, 1500)
+        }, 1500);
         return false;
     }
     if (staid === '0') {
         $('#error_no_staj').slideToggle();
         setTimeout(function () {
             $('#error_no_staj').slideToggle();
-        }, 1500)
+        }, 1500);
         return false;
     }
     return true;
@@ -115,7 +116,7 @@ function setModalHandlers() {
             from: 0,
             disable: disable
         })
-    })
+    });
     $(`#close_modal`).on('click', () => modalClosing());
     $(`#post`).on('click', (e) => {
         e.preventDefault();
@@ -133,10 +134,10 @@ function setModalHandlers() {
                     'dopinfo': dopInfo
                 }
             }).fail((jqXHR, textStatus) => {
-                $('.modal-content').html(badModal(`Ошибка ${jqXHR.status} ${jqXHR.responseText}`)).after(() => modalCenter())
+                $('.modal-content').html(badModal(`Ошибка ${jqXHR.status} ${jqXHR.responseText}`)).after(() => modalCenter());
                 setTimeout(() => modalClosing(), 1300);
             }).done((res) => {
-                $('.modal-content').html(okModal("Вакансия успешно сохранена")).after(() => modalCenter())
+                $('.modal-content').html(okModal("Вакансия успешно сохранена")).after(() => modalCenter());
                 setTimeout(() => modalClosing(), 1300);
                 const vacancy = new DirectorVacancy(res.date_insert, res.doljnost_id, res.dop_info, res.dtype, res.id, res.id_directora, res.name, res.schoolid, res.staj_id, res.value, res.zp, res.resp);
                 vacancy.renderDirectorSide(`#schools_vacancies`)
@@ -204,11 +205,14 @@ function newVacaModal() {
 function renderVaca() {
     DirectorVacancy.respslength = 0;
     getVacanciesBySchoolId().then(result => {
+        if (result.config.url !== result.request.responseURL) {
+            window.location.href = result.request.responseURL;
+        }
         $('.rating-box').html('');
-        result.map(function (res) {
+        result.data.map(function (res) {
             const vacancy = new DirectorVacancy(res.date_insert, res.doljnost_id, res.dop_info, res.dtype, res.id, res.id_directora, res.name, res.schoolid, res.staj_id, res.value, res.zp, res.resp);
             vacancy.renderDirectorSide(`#schools_vacancies`)
-        })
+        });
         $('#vacancy_count').text(getRightSting(DirectorVacancy.respslength));
     })
 }
@@ -228,5 +232,5 @@ function getRightSting(length) {
 
 $(document).ready(() => {
     renderVaca();
-})
+});
 

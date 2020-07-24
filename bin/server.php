@@ -1,6 +1,6 @@
 <?php
 
-use App\LiveScores\Chat;
+use App\Chat\Chat;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
