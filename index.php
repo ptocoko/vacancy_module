@@ -7,6 +7,8 @@ use App\Middleware\AuthMiddleware;
 use DI\ContainerBuilder;
 use Pecee\SimpleRouter\SimpleRouter;
 use Symfony\Component\Dotenv\Dotenv;
+use Twig\Loader\FilesystemLoader;
+use Twig\Loader\LoaderInterface;
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/src/Config/settings.php';
@@ -19,6 +21,7 @@ $container = (new ContainerBuilder())
         ->enableCompilation(__DIR__ . '/var/cache')
         ->writeProxiesToFile(true, __DIR__ . '/var/cache')
         ->build();
+$container->set(LoaderInterface::class, new FilesystemLoader(__DIR__ . '/public/'));
 SimpleRouter::enableDependencyInjection($container);
 SimpleRouter::setDefaultNamespace('App\Controllers');
 
@@ -77,10 +80,6 @@ SimpleRouter::group(
                                 ['code' => '[0-9]+']
                         );
                         /**
-                         * @see VacancyResponseController::post()
-                         */
-                        SimpleRouter::post(Routes::VACANCY_RESPONSE_ROUTE . '/', 'VacancyResponseController@post');
-                        /**
                          * @see VacancyResponseController::delete()
                          */
                         SimpleRouter::delete(
@@ -88,6 +87,22 @@ SimpleRouter::group(
                                 'VacancyResponseController@delete'
                         )->where(
                                 ['id' => '[0-9]+']
+                        );
+                        /**
+                         * @see \App\Controllers\DialogsController::create()
+                         */
+                        SimpleRouter::post(
+                                Routes::VACANCY_ROUTE . '/{vacancyId}/accept/{teacherId}',
+                                'DialogsController@create'
+                        )->where(
+                                ['teacherId' => '[0-9]+', 'vacancyId' => '[0-9]+']
+                        );
+                        /**
+                         * @see \App\Controllers\DialogsController::getDialogsByParticipant()
+                         */
+                        SimpleRouter::get(
+                                '/dialogs',
+                                'DialogsController@getDialogsByParticipant'
                         );
                     }
             );
@@ -126,7 +141,7 @@ SimpleRouter::group(
             );
 
             SimpleRouter::get('/', 'IndexController@index');
+            SimpleRouter::get('/dialogs', 'IndexController@indexe');
         }
 );
-
 SimpleRouter::start();

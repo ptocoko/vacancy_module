@@ -6,7 +6,7 @@ namespace App\Middleware;
 
 
 use App\Config\Routes;
-use App\Models\UserRoles;
+use App\Domain\UserRoles;
 use App\Repository\ParticipantDirectorRepository;
 use DI\Annotation\Inject;
 use Pecee\Http\Middleware\IMiddleware;

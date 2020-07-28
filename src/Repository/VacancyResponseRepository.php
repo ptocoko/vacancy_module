@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -31,7 +32,8 @@ class VacancyResponseRepository extends AbstractRepository
                                pd.surname,
                                pd.telefon,
                                pd.email,
-                               vr.response_comment
+                               vr.response_comment,
+                               vr.is_accepted
                         FROM %s vr
                                  JOIN %s pd ON pd.id = vr.user_id
                                  LEFT OUTER JOIN %s a ON pd.areas = a.Code
@@ -54,7 +56,7 @@ class VacancyResponseRepository extends AbstractRepository
         return TableNames::VACANCY_RESPONSES;
     }
 
-    public function countOfResponsesWith(int $userId, int $vacancyId): array
+    public function countOfResponsesWith(int $userId, int $vacancyId): int
     {
         $query = sprintf(
                 "SELECT COUNT(*) FROM %s WHERE user_id = :userId AND vacancy_id = :vacancyId",
@@ -68,7 +70,7 @@ class VacancyResponseRepository extends AbstractRepository
     public function saveResponse(
             int $vacancyId,
             int $userId,
-            string $responseDate,
+            int $responseDate,
             string $responseComment,
             string $responseDay
     ): int {
@@ -85,5 +87,12 @@ class VacancyResponseRepository extends AbstractRepository
                 ]
         );
         return (int)$this->dbo->lastInsertId();
+    }
+
+    public function setAccepted(int $responseId)
+    {
+        $query = "UPDATE vacancy_responses SET is_accepted = 1 WHERE id = :id";
+        $stmt = $this->dbo->prepare($query);
+        $stmt->execute(['id' => $responseId]);
     }
 }

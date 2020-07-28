@@ -146,7 +146,7 @@ class Vacancy {
                             $('.close-modal').off('click');
                             e.preventDefault();
                             $.post({
-                                url: `${baseUrl}/vacancyresponse/postresponse`,
+                                url: `${baseUrl}/vacancy_responses`,
                                 data: {
                                     'vid': this.id,
                                     'comment': $('#comment').val()
@@ -165,14 +165,24 @@ class Vacancy {
                                 } else {
                                     setTimeout(() => this.modalClosing(modalBlock, modalFonBlock), 1300)
                                 }
-                            }).done(() => {
-                                $('.modal_form').hide().after(() => {
-                                    $('.modal-content').html(this.okModal('Ваш отзыв на вакансию успешно отправлен'))
-                                        .after(() => {
-                                            this.modalCenter();
-                                        });
+                            }).done((data, textStatus, jqXHR) => {
+                                if (jqXHR.status === 201) {
+                                    $('.modal_form').hide().after(() => {
+                                        $('.modal-content').html(this.okModal('Ваш отзыв на вакансию успешно отправлен'))
+                                            .after(() => {
+                                                this.modalCenter();
+                                            });
+                                        setTimeout(() => this.modalClosing(modalBlock, modalFonBlock), 1300)
+                                    })
+                                } else {
+                                    $('.modal_form').hide().after(() => {
+                                        $('.modal-content').html(this.badModal('Что-то пошло не так'))
+                                            .after(() => {
+                                                this.modalCenter();
+                                            });
+                                    });
                                     setTimeout(() => this.modalClosing(modalBlock, modalFonBlock), 1300)
-                                })
+                                }
                             });
                         })
                     });

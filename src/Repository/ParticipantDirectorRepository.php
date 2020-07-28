@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Config\TableNames;
-use App\Models\User;
+use App\Domain\User;
 use DI\Annotation\Injectable;
 
 /**

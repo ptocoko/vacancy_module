@@ -6,8 +6,8 @@ namespace App\Chat;
 
 
 use App\Config\MessageTypes;
+use App\Repository\DialogsRepository;
 use App\Repository\MessageRepository;
-use App\Repository\RoomsRepository;
 use Exception;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
@@ -22,21 +22,20 @@ class Chat implements MessageComponentInterface
     private $clients;
 
     /**
-     * @var RoomsRepository
+     * @var DialogsRepository
      */
     private $roomsRepository;
 
     public function __construct()
     {
         $this->clients = new SplObjectStorage();
-        $this->roomsRepository = new RoomsRepository();
+        $this->roomsRepository = new DialogsRepository();
     }
 
 
     public function onOpen(ConnectionInterface $conn): void
     {
-        $_SESSION['work'] = '2';
-        $_SESSION['id'] = '99';
+        var_dump($_SESSION);
         $conn->type = $_SESSION['work'] === '2' || $_SESSION['work'] === '6' ? 1 : 2;
         $conn->id = (int)$_SESSION['id'];
         $conn->messageRepository = new MessageRepository();
@@ -70,7 +69,7 @@ class Chat implements MessageComponentInterface
             switch ($messageData['type']) {
                 case MessageTypes::INIT:
                     $from->roomId = (int)$messageData['roomId'];
-                    $room = $this->roomsRepository->findChatRoomsWithParticipantsData()[$from->roomId];
+                    $room = $this->roomsRepository->parseChatRooms()[$from->roomId];
                     $participant = $room['roomParticipants'][$from->type];
                     if (isset($room) && isset($participant) && $participant['id'] === $from->id) {
                         $from->name = $participant['name'];

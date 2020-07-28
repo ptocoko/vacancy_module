@@ -71,7 +71,7 @@ class VacancyRepository extends AbstractRepository
             $this->constructSql($sql, $cond);
         }
         if ($payment !== null) {
-            $cond = "v.zp BETWEEN " . $payment['min'] . " AND " . $payment['max'];
+            $cond = sprintf("v.zp BETWEEN %s AND %s", $payment['min'], $payment['max']);
             $this->constructSql($sql, $cond);
         }
         if ($payment === null) {

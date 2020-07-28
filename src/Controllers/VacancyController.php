@@ -39,6 +39,9 @@ class VacancyController extends AbstractController
         $this->vacancyResponseRepository = $vacancyResponseRepository;
     }
 
+    /**
+     * @return Response
+     */
     public function getSortedVacancies(): Response
     {
         $areaCode = (int)$this->inputHandler->get('ac')->getValue();
@@ -63,6 +66,9 @@ class VacancyController extends AbstractController
         );
     }
 
+    /**
+     * @return Response
+     */
     public function getBySchool(): Response
     {
         $vacancies = $this->vacancyRepository->findBySchoolId(SimpleRouter::request()->user->schoolid);
@@ -72,11 +78,18 @@ class VacancyController extends AbstractController
         return $this->json($vacancies);
     }
 
+    /**
+     * @param int $id
+     * @return string
+     */
     public function deleteVacancy(int $id): string
     {
         return (string)$this->vacancyRepository->delete($id);
     }
 
+    /**
+     * @return Response
+     */
     public function postVacancy()
     {
         $positionId = (int)$this->inputHandler->post('pid')->getValue();
@@ -105,6 +118,11 @@ class VacancyController extends AbstractController
         return $this->invalidRequest();
     }
 
+    /**
+     * @param int $positionId
+     * @param string $schoolId
+     * @return bool
+     */
     public function vacancyExists(
             int $positionId,
             string $schoolId
@@ -112,6 +130,10 @@ class VacancyController extends AbstractController
         return $this->vacancyRepository->countOfVacanciesWith($positionId, $schoolId) > 0;
     }
 
+    /**
+     * @param int $id
+     * @return Response
+     */
     public function updateVacancy(int $id): Response
     {
         $params = json_decode(file_get_contents("php://input"), true);

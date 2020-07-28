@@ -6,7 +6,6 @@ namespace App\Controllers;
 
 
 use App\Repository\VacancyResponseRepository;
-use Exception;
 use Pecee\SimpleRouter\SimpleRouter;
 
 class VacancyResponseController extends AbstractController
@@ -32,46 +31,35 @@ class VacancyResponseController extends AbstractController
 
     public function post()
     {
-        if (!empty($_SESSION['login'])) {
-            $userId = $_SESSION['id'];
-            $vacancyId = $this->inputHandler->post('vid');
-            if ($this->respondedAlready($userId, $vacancyId)) {
-                return $this->invalidRequest(407, 'Вы уже отправили отклик на данную вакансию');
-            }
-            $response_date = time();
-            $response_comment = $this->inputHandler->post('comment');
-            $rday = date("d.m.Y");
-            if ($userId && $vacancyId) {
-                SimpleRouter::response()->httpCode(201);
-                try {
-                    return json_encode(
-                            $this->repository->saveResponse(
-                                    $vacancyId,
-                                    $userId,
-                                    $response_date,
-                                    $response_comment,
-                                    $rday
-                            )
-                    );
-                } catch (Exception $e) {
-                    return $this->invalidRequest();
-                }
-            } else {
-                SimpleRouter::response()->httpCode(400);
-                return 'Bad request';
-            }
-        } else {
-            return $this->invalidRequest(401, 'Пожалуйста зайдите в свой личный кабинет или зарегестрируйтесь');
+        $vacancyId = (int)$this->inputHandler->post('vid')->getValue();
+        if ($this->respondedAlready(SimpleRouter::request()->user->id, $vacancyId)) {
+            return $this->invalidRequest(407, 'Вы уже отправили отклик на данную вакансию');
         }
+        $responseDate = time();
+        $responseComment = $this->inputHandler->post('comment')->getValue();
+        $responseDay = date("d.m.Y");
+        SimpleRouter::response()->httpCode(201);
+        return json_encode(
+                $this->repository->saveResponse(
+                        $vacancyId,
+                        SimpleRouter::request()->user->id,
+                        $responseDate,
+                        $responseComment,
+                        $responseDay
+                )
+        );
     }
 
-    private function respondedAlready($userId, $vacancyId): bool
-    {
+    private function respondedAlready(
+            int $userId,
+            int $vacancyId
+    ): bool {
         return $this->repository->countOfResponsesWith($userId, $vacancyId) > 0;
     }
 
-    public function delete(int $id): string
-    {
+    public function delete(
+            int $id
+    ): string {
         return (string)$this->repository->delete($id);
     }
 }

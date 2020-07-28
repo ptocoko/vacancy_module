@@ -12,8 +12,10 @@ class Responder {
     comment;
     responseDay;
     id;
+    participId;
 
-    constructor(areaName, telefon, birthday, doljnost, dopinfo, email, surname, name, secondName, staj, quality, comment, response_day, id) {
+    constructor(participId, areaName, telefon, birthday, doljnost, dopinfo, email, surname, name, secondName, staj, quality, comment, response_day, id, isAccepted) {
+        this.participId = participId;
         this.id = id;
         this.telefon = telefon;
         this.areaName = areaName;
@@ -28,6 +30,8 @@ class Responder {
         this.quality = quality;
         this.comment = comment;
         this.responseDay = response_day;
+        this.isAccepted = isAccepted;
+        console.log(this.isAccepted)
     }
 
     getDopInfo = () => this.comment.length ? `<p class="mb-1"><b>Сопроводительное письмо</b>: <span>${this.comment}</span>` : '';
@@ -35,6 +39,10 @@ class Responder {
     getQualityName = () => this.quality !== null ? `<p class="mb-1"><b>Квалификация</b>: <span>${this.quality}</span>` : '';
     getPhone = () => this.telefon !== '' ? `<p class="mb-1"><b>Телефон</b>: <span>${this.telefon}</span>` : '';
     getEmail = () => this.email !== '' ? `<p class="mb-1"><b>e-mail</b>: <span>${this.email}</span>` : '';
+    getAccept = () => this.isAccepted == 0 ? ` <a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link accept__btn"
+                               href="#0" id="accept">
+                                Принять
+                            </a>` : '';
     modalMarkUp = () => {
         return `<a class="close-modal" id="close_${this.id}">
                     <svg viewBox="0 0 20 20">
@@ -63,6 +71,7 @@ class Responder {
                         </div>
                         </p>
                         <div style="display: flex;justify-content: space-evenly">
+                            ${this.getAccept()}
                             <a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link exit__btn"
                                href="#0" id="exit">
                                 Закрыть
@@ -76,9 +85,10 @@ class Responder {
                 </div>
                 `
     };
-    setModalHandlers = (modalClosing, deleting) => {
+    setModalHandlers = (modalClosing, deleting, accepting) => {
         $(`#close_${this.id}`).on('click', () => modalClosing());
         $('#exit').on('click', () => modalClosing());
         $('#delete').on('click', () => deleting(this.id));
+        $('#accept').on('click', () => accepting(this.participId, this.id))
     }
 }

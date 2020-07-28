@@ -45,7 +45,8 @@ class DirectorVacancy {
 					</div>
 					<div class="accordion-content mx-2 pb-1">
 						<ul>${this.resps.map((resp) => {
-            return `<li id="li_${resp.response_id}"><p class="mb-0 small font-weight-normal text-uppercase mb-1 text-black lts-2px">
+            return `<li id="li_${resp.response_id}"><p class="mb-0 small font-weight-normal text-uppercase mb-1 text-black lts-2px" 
+                                                        style="${resp.is_accepted > 0 ? 'color:green;' : ''}">
 										<b>${resp.response_day}</b> Отклик от ${resp.surname} ${resp.name} ${resp.secondname}  
 										<a class="styled-link" id="resp_${resp.response_id}" style="cursor: pointer;">Подробнее...</a>
 									</p></li>`;
@@ -294,15 +295,31 @@ class DirectorVacancy {
             $(`#resp_${resp.response_id}`).on('click', (e) => {
                 e.preventDefault();
                 const me = this.resps.filter(x => x.response_id == resp.response_id)[0];
-                const responder = new Responder(me.area_name, me.telefon, me.birthday, me.doljnost, me.dopinfo, me.email, me.surname, me.name, me.secondname, me.particip_staj, me.quality_name, me.response_comment, me.response_day, me.response_id);
+                console.log(me);
+                const responder = new Responder(me.prticip_id, me.area_name, me.telefon, me.birthday, me.doljnost, me.dopinfo, me.email, me.surname, me.name, me.secondname, me.particip_staj, me.quality_name, me.response_comment, me.response_day, me.response_id, me.is_accepted);
                 this.vacancyModal.html(responder.modalMarkUp())
                     .after(() => {
-                        responder.setModalHandlers(this.modalClosing, this.deleteRespHandler);
+                        responder.setModalHandlers(this.modalClosing, this.deleteRespHandler, this.acceptRespHandler);
                     });
                 this.vacancyModalFon.addClass('active');
                 this.vacancyModal.addClass('active');
                 $('body').css('overflow', 'hidden');
             })
+        })
+    };
+    acceptRespHandler = (id, responseid) => {
+        $.ajax({
+            method: "POST",
+            url: `${baseUrl}/vacancies/${this.id}/accept/${id}`,
+            data: {
+                respid: responseid
+            }
+        }).done(() => {
+            $(`#li_${id}`).css('color', 'green');
+            this.vacancyModalFon.removeClass("active");
+            this.vacancyModal.removeClass("active");
+            $('body').css('overflow', 'auto');
+            setTimeout(() => this.vacancyModal.html(''), 500);
         })
     };
     deleteRespHandler = (id) => {

@@ -9,6 +9,10 @@ use DI\Annotation\Inject;
 use Pecee\Http\Input\InputHandler;
 use Pecee\Http\Response;
 use Pecee\SimpleRouter\SimpleRouter;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 abstract class AbstractController
 {
@@ -17,6 +21,12 @@ abstract class AbstractController
      * @var InputHandler
      */
     protected $inputHandler;
+
+    /**
+     * @Inject
+     * @var Environment
+     */
+    private $view;
 
     protected function json(array $data, int $httpResponseCode = 200): Response
     {
@@ -30,5 +40,19 @@ abstract class AbstractController
         SimpleRouter::response()->httpCode($code);
         SimpleRouter::response()->json(['reason' => $message]);
         return SimpleRouter::response();
+    }
+
+
+    /**
+     * @param string $template
+     * @param array $params
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    protected function render(string $template, array $params): string
+    {
+        return $this->view->load($template)->render($params);
     }
 }

@@ -176,6 +176,19 @@
     color: #ffffff;
 }
 
+.accept__btn {
+    cursor: pointer;
+    border: 1px solid;
+    padding: 1rem 1.5rem;
+    color: #7ac142;
+    border-radius: 5px;
+}
+
+.accept__btn:hover {
+    background-color: #7ac142;
+    color: #ffffff;
+}
+
 @media (max-width: 992px) {
     .my_check {
         flex: 0 0 100% !important;
