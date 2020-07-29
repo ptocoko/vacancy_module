@@ -55,10 +55,23 @@ class DialogsController extends AbstractController
         );
     }
 
-    public function getDialogsByParticipant()
+    public function getDialogsByParticipant(int $teacherId)
     {
-        return $this->json(
-                $this->dialogsRepository->findInterlocutorsByParticipantId(SimpleRouter::request()->user->id)
+        $dialogId = $this->dialogsRepository->findInterlocutorsByParticipantId(
+                SimpleRouter::request()->user->id,
+                $teacherId
         );
+        return $this->render(
+                'dialog.html.twig',
+                [
+                        'id' => SimpleRouter::request()->user->id,
+                        'roomid' => $dialogId,
+                        'type' => SimpleRouter::request()->user->type
+                ]
+        );
+//        $dialogs =
+//        return $this->json(
+//                $this->dialogsRepository->findInterlocutorsByParticipantId(SimpleRouter::request()->user->id)
+//        );
     }
 }

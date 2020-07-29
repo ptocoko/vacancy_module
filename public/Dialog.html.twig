@@ -1,11 +1,34 @@
 {% extends 'layout.html.twig' %}
 
 {% block stylesheets %}
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/mystyles.css">
 {% endblock %}
-{% block title %}Главная{% endblock %}
 
 {% block content %}
-    {% if dialog %}
-        {{ dialog.id }}
-    {% endif %}
+    <section class="msger">
+        <main class="msger-chat">
+
+        </main>
+
+        <form class="msger-inputarea">
+            <input type="text" class="msger-input" placeholder="Enter your message...">
+            <button type="button" class="msger-send-btn">Send</button>
+        </form>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const conn = new WebSocket("ws://localhost:8090"), button = $(".msger-send-btn"), text = $(".msger-input"),
+            chat = $(".msger-chat"),
+            msg = {roomId:{{ roomid }}, usrType:{{ type }}, id:{{ id }}};
+        console.log(chat)
+    </script>
+    <script src="/public/js/index.js">
+    </script>
 {% endblock %}

@@ -42,7 +42,7 @@ class Responder {
     getAccept = () => this.isAccepted == 0 ? ` <a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link accept__btn"
                                href="#0" id="accept">
                                 Принять
-                            </a>` : '';
+                            </a>` : `<a href="${baseUrl}/gotodialog/${this.participId}" class="text-uppercase font-weight-medium lts-2px text-center styled-link accept__btn"><i class="fa fa-paper-plane" aria-hidden="true"></i></a>`;
     modalMarkUp = () => {
         return `<a class="close-modal" id="close_${this.id}">
                     <svg viewBox="0 0 20 20">

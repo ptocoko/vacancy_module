@@ -75,7 +75,10 @@ class VacancyResponseRepository extends AbstractRepository
             string $responseDay
     ): int {
         $stmt = $this->dbo->prepare(
-                sprintf("INSERT INTO %s VALUES(NULL, :vid, :uid, :redate, :recomm, :rday)", $this::getTableName())
+                sprintf(
+                        "INSERT INTO %s(vacancy_id, user_id, response_date, response_comment, response_day) VALUES(:vid, :uid, :redate, :recomm, :rday)",
+                        $this::getTableName()
+                )
         );
         $stmt->execute(
                 [

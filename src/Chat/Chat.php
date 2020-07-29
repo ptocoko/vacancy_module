@@ -35,9 +35,8 @@ class Chat implements MessageComponentInterface
 
     public function onOpen(ConnectionInterface $conn): void
     {
-        var_dump($_SESSION);
-        $conn->type = $_SESSION['work'] === '2' || $_SESSION['work'] === '6' ? 1 : 2;
-        $conn->id = (int)$_SESSION['id'];
+        $conn->type = $_GET['work'] === '2' || $_GET['work'] === '6' ? 1 : 2;
+        $conn->id = (int)$_GET['id'];
         $conn->messageRepository = new MessageRepository();
         $this->clients->attach($conn);
     }
@@ -68,6 +67,8 @@ class Chat implements MessageComponentInterface
         if ($messageData = json_decode($msg, true)) {
             switch ($messageData['type']) {
                 case MessageTypes::INIT:
+                    $from->type = (int)$messageData['usrType'];
+                    $from->id = (int)$messageData['id'];
                     $from->roomId = (int)$messageData['roomId'];
                     $room = $this->roomsRepository->parseChatRooms()[$from->roomId];
                     $participant = $room['roomParticipants'][$from->type];

@@ -80,13 +80,20 @@ SimpleRouter::group(
                                 ['code' => '[0-9]+']
                         );
                         /**
-                         * @see VacancyResponseController::delete()
+                         * @see VacancyResponseController::post()
                          */
                         SimpleRouter::delete(
                                 Routes::VACANCY_RESPONSE_ROUTE . '/{id}',
                                 'VacancyResponseController@delete'
                         )->where(
                                 ['id' => '[0-9]+']
+                        );
+                        /**
+                         * @see VacancyResponseController::delete()
+                         */
+                        SimpleRouter::post(
+                                Routes::VACANCY_RESPONSE_ROUTE . '/',
+                                'VacancyResponseController@post'
                         );
                         /**
                          * @see \App\Controllers\DialogsController::create()
@@ -101,9 +108,9 @@ SimpleRouter::group(
                          * @see \App\Controllers\DialogsController::getDialogsByParticipant()
                          */
                         SimpleRouter::get(
-                                '/dialogs',
+                                '/gotodialog/{teacherid}',
                                 'DialogsController@getDialogsByParticipant'
-                        );
+                        )->where(['teacherId' => '[0-9]+', 'vacancyId' => '[0-9]+']);
                     }
             );
             SimpleRouter::group(

@@ -45,7 +45,9 @@ class DirectorVacancy {
 					</div>
 					<div class="accordion-content mx-2 pb-1">
 						<ul>${this.resps.map((resp) => {
-            return `<li id="li_${resp.response_id}"><p class="mb-0 small font-weight-normal text-uppercase mb-1 text-black lts-2px" 
+            console.log(resp);
+            return `
+                                    <li id="li_${resp.response_id}"><p class="mb-0 small font-weight-normal text-uppercase mb-1 text-black lts-2px" 
                                                         style="${resp.is_accepted > 0 ? 'color:green;' : ''}">
 										<b>${resp.response_day}</b> Отклик от ${resp.surname} ${resp.name} ${resp.secondname}  
 										<a class="styled-link" id="resp_${resp.response_id}" style="cursor: pointer;">Подробнее...</a>

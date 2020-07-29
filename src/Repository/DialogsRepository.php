@@ -52,19 +52,23 @@ class DialogsRepository
         file_put_contents($this->path, json_encode($this->rooms, JSON_PRETTY_PRINT, 512));
     }
 
-    public function findInterlocutorsByParticipantId(int $participantId): array
+    public function findInterlocutorsByParticipantId(int $directorId, int $participantId): ?int
     {
-        $output = [];
         foreach ($this->rooms as $roomId => $room) {
-            $temp = [];
-            if ((int)$room['roomParticipants'][0] === $participantId || (int)$room['roomParticipants'][1]['id'] === $participantId) {
-                foreach ($room['roomParticipants'] as $participant) {
-                    if ((int)$participant['id'] !== $participantId) {
-                        $output[] = ['id' => $roomId, 'participant' => $participant];
-                    }
-                }
+            if ((int)$room['roomParticipants'][1]['id'] === $directorId && (int)$room['roomParticipants'][2]['id'] === $participantId) {
+                return $roomId;
             }
         }
-        return $output;
+        return null;
+//        foreach ($this->rooms as $roomId => $room) {
+//            if ((int)$room['roomParticipants'][0] === $participantId || (int)$room['roomParticipants'][1]['id'] === $participantId) {
+//                foreach ($room['roomParticipants'] as $participant) {
+//                    if ((int)$participant['id'] !== $participantId) {
+//                        $output[] = ['id' => $roomId, 'participant' => $participant];
+//                    }
+//                }
+//            }
+//        }
+//        return $output;
     }
 }

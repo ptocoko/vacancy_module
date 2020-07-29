@@ -109,7 +109,7 @@ class VacancyController extends AbstractController
                     $dopInfo,
                     SimpleRouter::request()->user->id,
                     SimpleRouter::request()->user->schoolid,
-                    SimpleRouter::request()->user->areas,
+                    (int)SimpleRouter::request()->user->areas,
                     $dateInsert
             );
             $vacancy['resp'] = [];
