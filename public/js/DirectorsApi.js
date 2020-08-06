@@ -194,7 +194,7 @@ function newVacaModal() {
 							Выберите необходимый стаж
 						</p>
 						<a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link exit__btn"
-						   href="#"
+						    
 						   id="post">
 						   Добавить вакансию
 						</a>
@@ -205,11 +205,8 @@ function newVacaModal() {
 function renderVaca() {
     DirectorVacancy.respslength = 0;
     getVacanciesBySchoolId().then(result => {
-        if (result.config.url !== result.request.responseURL) {
-            window.location.href = result.request.responseURL;
-        }
         $('.rating-box').html('');
-        result.data.map(function (res) {
+        result.map(function (res) {
             const vacancy = new DirectorVacancy(res.date_insert, res.doljnost_id, res.dop_info, res.dtype, res.id, res.id_directora, res.name, res.schoolid, res.staj_id, res.value, res.zp, res.resp);
             vacancy.renderDirectorSide(`#schools_vacancies`)
         });

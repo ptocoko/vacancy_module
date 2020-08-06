@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -14,7 +15,10 @@ use DI\Annotation\Injectable;
 class PositionRepository extends AbstractRepository
 {
 
-    final static function getTableName(): string
+    /**
+     * @return string
+     */
+    final public static function getTableName(): string
     {
         return TableNames::POSITION;
     }

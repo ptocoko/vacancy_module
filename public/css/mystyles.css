@@ -199,8 +199,8 @@
 
 :root {
     --msger-bg: #fff;
-    --left-msg-bg: #ececec;
-    --right-msg-bg: #579ffb;
+    --left-msg-bg: #7ac142;
+    --right-msg-bg: #1e3685;
 }
 
 
@@ -219,7 +219,8 @@
 }
 
 .msger-chat::-webkit-scrollbar {
-    width: 5px;
+    width: 8px;
+    height: 40px;
 }
 
 .msger-chat::-webkit-scrollbar-track {
@@ -227,10 +228,9 @@
 }
 
 .msger-chat::-webkit-scrollbar-thumb {
-    border-radius: 3px;
+    border-radius: 5px;
     background: var(--right-msg-bg);
 }
-
 .msg {
     display: flex;
     align-items: flex-end;

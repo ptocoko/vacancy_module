@@ -9,7 +9,10 @@ use App\Config\TableNames;
 class ExperienceRepository extends AbstractRepository
 {
 
-    public static function getTableName(): string
+    /**
+     * @return string
+     */
+    final public static function getTableName(): string
     {
         return TableNames::EXPERIENCE;
     }

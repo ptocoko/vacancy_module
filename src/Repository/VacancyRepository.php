@@ -15,10 +15,7 @@ use DI\Annotation\Injectable;
  */
 class VacancyRepository extends AbstractRepository
 {
-    /**
-     * @var int
-     */
-    private $flag = 0;
+
 
     /**
      * @param int $areaCode
@@ -37,6 +34,7 @@ class VacancyRepository extends AbstractRepository
             int $experienceId,
             int $offset = 0
     ): array {
+        $flag = 0;
         $sql = sprintf(
                 "SELECT  v.id             AS id,
                                zp               AS zp,
@@ -60,27 +58,27 @@ class VacancyRepository extends AbstractRepository
         );
         if ($areaCode !== 0) {
             $cond = "v.areacode = {$areaCode}";
-            $this->constructSql($sql, $cond);
+            $this->constructSql($sql, $cond, $flag);
         }
         if ($schoolId !== '0') {
             $cond = "v.schoolid = {$schoolId}";
-            $this->constructSql($sql, $cond);
+            $this->constructSql($sql, $cond, $flag);
         }
         if ($positionId !== 0) {
             $cond = "v.doljnost_id = {$positionId}";
-            $this->constructSql($sql, $cond);
+            $this->constructSql($sql, $cond, $flag);
         }
         if ($payment !== null) {
             $cond = sprintf("v.zp BETWEEN %s AND %s", $payment['min'], $payment['max']);
-            $this->constructSql($sql, $cond);
+            $this->constructSql($sql, $cond, $flag);
         }
         if ($payment === null) {
             $cond = "v.zp = 'no'";
-            $this->constructSql($sql, $cond);
+            $this->constructSql($sql, $cond, $flag);
         }
         if ($experienceId !== 0) {
             $cond = "v.staj_id = {$experienceId}";
-            $this->constructSql($sql, $cond);
+            $this->constructSql($sql, $cond, $flag);
         }
         $sql .= " order by v.date_insert
 				limit 9 offset {$offset}";
@@ -90,7 +88,7 @@ class VacancyRepository extends AbstractRepository
     /**
      * @return string
      */
-    final static function getTableName(): string
+    final public static function getTableName(): string
     {
         return TableNames::VACANCY;
     }
@@ -98,12 +96,13 @@ class VacancyRepository extends AbstractRepository
     /**
      * @param string $sql
      * @param string $cond
+     * @param int $flag
      * @return void
      */
-    private function constructSql(string &$sql, string $cond): void
+    private function constructSql(string &$sql, string $cond, int &$flag): void
     {
-        if ($this->flag == 0) {
-            $this->flag = 1;
+        if ($flag === 0) {
+            $flag = 1;
             $sql .= " WHERE " . $cond;
         } else {
             $sql .= " AND " . $cond;
@@ -249,16 +248,13 @@ class VacancyRepository extends AbstractRepository
      */
     public function updateVacancy(
             int $id,
-            ?int $positionId,
+            ?string $positionId,
             ?int $paymentValue,
             int $experienceId,
             string $dopInfo
     ): array {
-        if ($paymentValue === null) {
-            $paymentValue = 'no';
-        }
         $params = [
-                'zp' => $paymentValue,
+                'zp' => $paymentValue ?? 'no',
                 'staj_id' => $experienceId,
         ];
         if ($positionId !== null) {

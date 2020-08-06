@@ -111,7 +111,6 @@ class DirectorVacancy {
 							Выберите необходимый стаж
 						</p>
 						<a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link exit__btn"
-						   href="#"
 						   id="update_${this.id}">
 						   Сохранить изменения
 						</a>
@@ -309,19 +308,12 @@ class DirectorVacancy {
             })
         })
     };
-    acceptRespHandler = (id, responseid) => {
+    acceptRespHandler = (responseid) => {
         $.ajax({
-            method: "POST",
-            url: `${baseUrl}/vacancies/${this.id}/accept/${id}`,
-            data: {
-                respid: responseid
-            }
+            method: "GET",
+            url: `${baseUrl}/vacancy_responses/${responseid}/accept`
         }).done(() => {
-            $(`#li_${id}`).css('color', 'green');
-            this.vacancyModalFon.removeClass("active");
-            this.vacancyModal.removeClass("active");
-            $('body').css('overflow', 'auto');
-            setTimeout(() => this.vacancyModal.html(''), 500);
+            window.location.href = `${baseUrl}/vacancy_responses/${responseid}/dialog`;
         })
     };
     deleteRespHandler = (id) => {

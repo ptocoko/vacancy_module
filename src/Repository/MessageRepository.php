@@ -4,7 +4,8 @@
 namespace App\Repository;
 
 
-use App\Config\Cryptor;
+use App\Core\Cryptor;
+use DateTime;
 use Exception;
 use Ratchet\ConnectionInterface;
 
@@ -20,12 +21,9 @@ class MessageRepository
      * @return array
      * @throws Exception
      */
-    public function getMessagesByRoom(): array
+    public function getMessagesByDialog(): array
     {
-        $messages = json_decode(file_get_contents($this->path), true) !== null ? json_decode(
-                file_get_contents($this->path),
-                true
-        ) : [];
+        $messages = json_decode(file_get_contents($this->path), true) ?? [];
         foreach ($messages as &$message) {
             $message['text'] = Cryptor::Decrypt($message['text'], getenv('SECRET_KEY'));
         }
@@ -47,7 +45,7 @@ class MessageRepository
                 'participantId' => $from->id,
                 'name' => $from->name,
                 'text' => Cryptor::Encrypt($text, getenv("SECRET_KEY")),
-                'date' => time()
+                'date' => new DateTime('now')
         ];
         $messages[] = $message;
         file_put_contents($this->path, json_encode($messages, JSON_PRETTY_PRINT, 512));
@@ -59,11 +57,11 @@ class MessageRepository
      * @param string $path
      * @return MessageRepository
      */
-    public function setPath(string $path)
+    public function setPath(string $path): MessageRepository
     {
-        $this->path = sprintf("%s/Data/Messages/%s.json", dirname(dirname(__DIR__)), $path);
+        $this->path = sprintf("%s/Data/Messages/%s.json", dirname(__DIR__, 2), $path);
         if (!file_exists($this->path)) {
-            $file = fopen($this->path, 'w');
+            $file = fopen($this->path, 'wb');
             fclose($file);
         }
         return $this;

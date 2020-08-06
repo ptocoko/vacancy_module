@@ -1,11 +1,12 @@
 {% extends 'layout.html.twig' %}
-
+{% block title %}Диалог {{ name }}{% endblock %}
 {% block stylesheets %}
     <style>
         body {
             overflow: hidden;
         }
     </style>
+    <link rel="stylesheet" href="/public/css/chatinput.css">
     <link rel="stylesheet" href="/public/css/mystyles.css">
 {% endblock %}
 
@@ -15,18 +16,20 @@
 
         </main>
 
-        <form class="msger-inputarea">
-            <input type="text" class="msger-input" placeholder="Enter your message...">
-            <button type="button" class="msger-send-btn">Send</button>
+        <form class="chat-input-area">
+            <input id="msger_input" type="text" placeholder="Write something..." class="chat-input-area__input">
+            <button id="send_btn" type="submit" class="chat-input-area__submit-button"><i class="fa fa-paper-plane"
+                                                                                          aria-hidden="true"></i>
+            </button>
         </form>
     </section>
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        const conn = new WebSocket("ws://localhost:8090"), button = $(".msger-send-btn"), text = $(".msger-input"),
+        const conn = new WebSocket("ws://localhost:8090"), button = $("#send_btn"), text = $("#msger_input"),
             chat = $(".msger-chat"),
-            msg = {roomId:{{ roomid }}, usrType:{{ type }}, id:{{ id }}};
+            msg = {responseId:{{ responseId }}, role: "{{ role }}", id:{{ id }}};
         console.log(chat)
     </script>
     <script src="/public/js/index.js">

@@ -30,7 +30,7 @@ class AreaController extends AbstractController
     /**
      * @return Response
      */
-    public function getAll(): Response
+    public function index(): Response
     {
         return $this->json($this->areaRepository->findAll(), 200);
     }
@@ -39,7 +39,7 @@ class AreaController extends AbstractController
      * @param int $code
      * @return Response
      */
-    public function getByCode(int $code): Response
+    public function show(int $code): Response
     {
         return $this->json($this->areaRepository->findByCode($code), 200);
     }
@@ -48,7 +48,7 @@ class AreaController extends AbstractController
      * @param int $code
      * @return Response
      */
-    public function getSchoolsByArea(int $code): Response
+    public function showSchools(int $code): Response
     {
         return $this->json($this->schoolRepository->getByAreaCode($code), 200);
     }

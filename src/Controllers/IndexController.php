@@ -5,19 +5,28 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 
-use Pecee\Http\Response;
-use Pecee\SimpleRouter\SimpleRouter;
+use App\Domain\UserRoles;
+use App\Middleware\AuthenticatedUserDataTrait;
+use App\Repository\SchoolRepository;
+use DI\Annotation\Inject;
 
 class IndexController extends AbstractController
 {
-    public function index(): Response
+    use AuthenticatedUserDataTrait;
+
+    /**
+     * @Inject
+     * @var SchoolRepository
+     */
+    private $schoolRepository;
+
+
+    public function index(): string
     {
-        if ($_SESSION['work'] == 2 || $_SESSION['work'] == 6) {
-            SimpleRouter::response()->redirect('http://vacancy.test/public/director_side.php');
-            return SimpleRouter::response();
-        } else {
-            SimpleRouter::response()->redirect('http://vacancy.test/public/teacher_side.php');
-            return SimpleRouter::response();
+        if ($this->getAuthenticatedUser()->type === UserRoles::DIRECTOR) {
+            $params['school'] = $this->schoolRepository->findById($this->getAuthenticatedUser()->schoolid);
+            return $this->render('Director.html.twig', $params);
         }
+        return $this->render('Teacher.html.twig', []);
     }
 }

@@ -26,7 +26,7 @@ class PositionController extends AbstractController
     /**
      * @return string
      */
-    public function getAll(): string
+    public function index(): string
     {
         return $this->json($this->repository->findAll());
     }

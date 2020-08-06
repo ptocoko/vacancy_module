@@ -1,10 +1,13 @@
 <?php
 
 declare(strict_types=1);
+
 namespace App\Repository;
 
 
+use App\Domain\Dialog;
 use App\Domain\DialogParticipant;
+use App\Domain\User;
 
 class DialogsRepository
 {
@@ -15,41 +18,52 @@ class DialogsRepository
     /**
      * @var array
      */
-    private $rooms;
+    public $rooms;
 
     public function __construct()
     {
-        $this->path = sprintf("%s/data/rooms.json", dirname(dirname(__DIR__)));
+        $this->path = sprintf("%s/data/dialogs.json", dirname(__DIR__, 2));
         if (!file_exists($this->path)) {
-            $file = fopen($this->path, 'w');
+            $file = fopen($this->path, 'wb');
             fclose($file);
         }
-        $this->rooms = $this->parseChatRooms();
+        $this->parseDialogs();
     }
 
-    public function parseChatRooms(): array
+    public function parseDialogs(): void
     {
         $rooms = json_decode(file_get_contents($this->path), true);
-        return isset($rooms) ? $rooms : [];
+        foreach ($rooms as $room) {
+            $teacher = new User();
+            $teacher->id = $room['teacher']['id'];
+            $teacher->name = $room['teacher']['name'];
+            $teacher->surname = $room['teacher']['surname'];
+            $teacher->secondname = $room['teacher']['secondname'];
+            $teacher->schoolid = $room['teacher']['schoolid'];
+            $director = new User();
+            $director->id = $room['director']['id'];
+            $director->name = $room['director']['name'];
+            $director->surname = $room['director']['surname'];
+            $director->secondname = $room['director']['secondname'];
+            $director->schoolid = $room['director']['schoolid'];
+            $this->rooms[] = new Dialog($room['responseid'], $director, $teacher);
+        }
     }
 
-    public function saveRoom(int $vacancyId, DialogParticipant $director, DialogParticipant $teacher): void
+    public function save(Dialog $dialog): void
     {
-        $newRoom = [
-                'roomName' => 'vacancy_' . $vacancyId,
-                'roomParticipants' => [
-                        1 => [
-                                'id' => $director->getId(),
-                                'name' => $director->getName()
-                        ],
-                        2 => [
-                                'id' => $teacher->getId(),
-                                'name' => $teacher->getName()
-                        ]
-                ]
-        ];
-        $this->rooms[] = $newRoom;
+        $this->rooms[] = $dialog;
         file_put_contents($this->path, json_encode($this->rooms, JSON_PRETTY_PRINT, 512));
+    }
+
+    public function findByResponseId(int $id): ?Dialog
+    {
+        foreach ($this->rooms as $room) {
+            if ($room->responseid === $id) {
+                return $room;
+            }
+        }
+        return null;
     }
 
     public function findInterlocutorsByParticipantId(int $directorId, int $participantId): ?int
@@ -60,15 +74,5 @@ class DialogsRepository
             }
         }
         return null;
-//        foreach ($this->rooms as $roomId => $room) {
-//            if ((int)$room['roomParticipants'][0] === $participantId || (int)$room['roomParticipants'][1]['id'] === $participantId) {
-//                foreach ($room['roomParticipants'] as $participant) {
-//                    if ((int)$participant['id'] !== $participantId) {
-//                        $output[] = ['id' => $roomId, 'participant' => $participant];
-//                    }
-//                }
-//            }
-//        }
-//        return $output;
     }
 }

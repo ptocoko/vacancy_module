@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 
-use App\Config\Dbo;
+use App\Core\Dbo;
 
 abstract class AbstractRepository
 {
@@ -22,10 +22,10 @@ abstract class AbstractRepository
         $this->dbo = $dbo;
     }
 
-    public function findAll()
+    public function findAll(): array
     {
         $stmt = $this->dbo->query('SELECT * FROM ' . static::getTableName());
-        return $stmt->fetchAll();
+        return $stmt->fetchAll() ?? [];
     }
 
     abstract public static function getTableName(): string;

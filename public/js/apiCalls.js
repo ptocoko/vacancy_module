@@ -1,4 +1,5 @@
 const baseUrl = 'http://vacancy.test';
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 const getAreas = async () => {
     const {data} = await axios.get(`${baseUrl}/areas`);
     return data;
@@ -19,16 +20,13 @@ const getSchools = async () => {
 };
 
 async function getDoljnosti() {
-    try {
         const {data} = await axios.get(`${baseUrl}/positions`);
         return data;
-    } catch (e) {
-        throw e;
-    }
+
 }
 
 async function getVacanciesBySchoolId() {
-    const data = await axios.get(`${baseUrl}/vacancies/getbyschool`);
+    const {data} = await axios.get(`${baseUrl}/vacancies/by_school`);
     return data;
 }
 

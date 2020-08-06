@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Config\TableNames;
+use App\Domain\AuthenticatedUser;
 use App\Domain\User;
 use DI\Annotation\Injectable;
 
@@ -16,14 +17,24 @@ use DI\Annotation\Injectable;
 class ParticipantDirectorRepository extends AbstractRepository
 {
 
-    public function findById(int $id): ?User
+    public function findAuthenticatedUsersData(): ?AuthenticatedUser
+    {
+        $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE id = :id", $this::getTableName()));
+        $stmt->execute([':id' => (int)$_SESSION['id']]);
+        return $stmt->fetchObject(AuthenticatedUser::class);
+    }
+
+    public function findUserData(int $id): ?User
     {
         $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE id = :id", $this::getTableName()));
         $stmt->execute([':id' => $id]);
         return $stmt->fetchObject(User::class);
     }
 
-    final static function getTableName(): string
+    /**
+     * @return string
+     */
+    final public static function getTableName(): string
     {
         return TableNames::PARTICIPANT_DIRECTOR;
     }

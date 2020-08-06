@@ -39,10 +39,10 @@ class Responder {
     getQualityName = () => this.quality !== null ? `<p class="mb-1"><b>Квалификация</b>: <span>${this.quality}</span>` : '';
     getPhone = () => this.telefon !== '' ? `<p class="mb-1"><b>Телефон</b>: <span>${this.telefon}</span>` : '';
     getEmail = () => this.email !== '' ? `<p class="mb-1"><b>e-mail</b>: <span>${this.email}</span>` : '';
-    getAccept = () => this.isAccepted == 0 ? ` <a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link accept__btn"
-                               href="#0" id="accept">
+    getAccept = () => this.isAccepted === 0 ? ` <a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link accept__btn"
+                                id="accept">
                                 Принять
-                            </a>` : `<a href="${baseUrl}/gotodialog/${this.participId}" class="text-uppercase font-weight-medium lts-2px text-center styled-link accept__btn"><i class="fa fa-paper-plane" aria-hidden="true"></i></a>`;
+                            </a>` : `<a href="${baseUrl}/vacancy_responses/${this.id}/dialog" class="text-uppercase font-weight-medium lts-2px text-center styled-link accept__btn"><i class="fa fa-paper-plane" aria-hidden="true"></i></a>`;
     modalMarkUp = () => {
         return `<a class="close-modal" id="close_${this.id}">
                     <svg viewBox="0 0 20 20">
@@ -73,11 +73,11 @@ class Responder {
                         <div style="display: flex;justify-content: space-evenly">
                             ${this.getAccept()}
                             <a class="text-uppercase d-block font-weight-medium lts-2px text-center styled-link exit__btn"
-                               href="#0" id="exit">
+                               href="#" id="exit">
                                 Закрыть
                             </a>
                              <a class="text-uppercase btn--light  d-block font-weight-medium lts-2px styled-link cancel__btn"
-                               href="#0" id="delete">
+                               href="#" id="delete">
                                 Отклонить
                             </a>
                         </div>
@@ -89,6 +89,6 @@ class Responder {
         $(`#close_${this.id}`).on('click', () => modalClosing());
         $('#exit').on('click', () => modalClosing());
         $('#delete').on('click', () => deleting(this.id));
-        $('#accept').on('click', () => accepting(this.participId, this.id))
+        $('#accept').on('click', () => accepting(this.id))
     }
 }

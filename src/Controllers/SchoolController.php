@@ -7,6 +7,7 @@ namespace App\Controllers;
 
 use App\Repository\SchoolRepository;
 use DI\Annotation\Injectable;
+use Pecee\Http\Response;
 
 /**
  * Class SchoolController
@@ -29,13 +30,13 @@ class SchoolController extends AbstractController
         $this->repository = $repository;
     }
 
-    public function getAll(): string
+    public function index(): Response
     {
         return $this->json($this->repository->findAll());
     }
 
 
-    public function getById(string $id): string
+    public function show(string $id): Response
     {
         return $this->json($this->repository->findById($id));
     }

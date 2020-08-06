@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 
 namespace App\Domain;
 
@@ -12,19 +11,39 @@ class User
      */
     public $id;
     /**
-     * @var int
-     */
-    public $type;
-
-    /**
      * @var string
      */
     public $schoolid;
+    /**
+     * @var string
+     */
+    public $surname;
+    /**
+     * @var string
+     */
+    public $name;
+    /**
+     * @var string
+     */
+    public $secondname;
 
-
-    public function __construct()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
-        $this->type = $_SESSION['work'] === '2' || $_SESSION['work'] === '6' ? UserRoles::DIRECTOR : UserRoles::TEACHER;
+        return sprintf("%s %s %s", $this->surname, $this->name, $this->secondname);
     }
 
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function __set($name, $value)
+    {
+    }
 }

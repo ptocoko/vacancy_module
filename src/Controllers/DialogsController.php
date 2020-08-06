@@ -6,7 +6,6 @@ namespace App\Controllers;
 
 use App\Domain\DialogParticipant;
 use App\Repository\DialogsRepository;
-use App\Repository\MessageRepository;
 use App\Repository\ParticipantDirectorRepository;
 use App\Repository\VacancyResponseRepository;
 use Pecee\SimpleRouter\SimpleRouter;
@@ -25,53 +24,43 @@ class DialogsController extends AbstractController
      * @var VacancyResponseRepository
      */
     private $vacancyResponseRepository;
-    /**
-     * @var MessageRepository
-     */
-    private $messageRepository;
+
 
     public function __construct(
             DialogsRepository $dialogsRepository,
             ParticipantDirectorRepository $participantDirectorRepository,
-            VacancyResponseRepository $vacancyResponseRepository,
-            MessageRepository $messageRepository
+            VacancyResponseRepository $vacancyResponseRepository
     ) {
         $this->dialogsRepository = $dialogsRepository;
         $this->participantDirectorRepository = $participantDirectorRepository;
         $this->vacancyResponseRepository = $vacancyResponseRepository;
-        $this->messageRepository = $messageRepository;
     }
 
-    public function create(int $vacancyId, int $teacherId): void
-    {
-        $teacher = $this->participantDirectorRepository->findById($teacherId);
-        $responseId = (int)$this->inputHandler->post('respid')->getValue();
-        $user = SimpleRouter::request()->user;
-        $this->vacancyResponseRepository->setAccepted($responseId);
-        $this->dialogsRepository->saveRoom(
-                $vacancyId,
-                new DialogParticipant($user->id, $user->name, $user->type),
-                new DialogParticipant($teacher->id, $teacher->name, $teacher->type)
-        );
-    }
+//    public function accept(int $vacancyId, int $teacherId): void
+//    {
+//        $teacher = $this->participantDirectorRepository->findAuthenticatedUsersData($teacherId);
+//        $responseId = (int)$this->inputHandler->post('respid')->getValue();
+//        $user = SimpleRouter::request()->user;
+//        $this->vacancyResponseRepository->setAccepted($responseId);
+//        $this->dialogsRepository->save(
+//                $vacancyId,
+//                SimpleRouter::request()->user,
+//                $th
+//        );
+//        return $this->render()
+//    }
 
-    public function getDialogsByParticipant(int $teacherId)
+    public function getDialogsByParticipant(int $teacherId): string
     {
         $dialogId = $this->dialogsRepository->findInterlocutorsByParticipantId(
                 SimpleRouter::request()->user->id,
                 $teacherId
         );
-        return $this->render(
-                'dialog.html.twig',
-                [
-                        'id' => SimpleRouter::request()->user->id,
-                        'roomid' => $dialogId,
-                        'type' => SimpleRouter::request()->user->type
-                ]
-        );
-//        $dialogs =
-//        return $this->json(
-//                $this->dialogsRepository->findInterlocutorsByParticipantId(SimpleRouter::request()->user->id)
-//        );
+        $params = [
+                'id' => SimpleRouter::request()->user->id,
+                'roomid' => $dialogId,
+                'type' => SimpleRouter::request()->user->type
+        ];
+        return $this->render('dialog.html.twig', $params);
     }
 }

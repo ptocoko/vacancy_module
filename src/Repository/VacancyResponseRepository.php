@@ -14,6 +14,13 @@ use DI\Annotation\Injectable;
  */
 class VacancyResponseRepository extends AbstractRepository
 {
+    public function findById(int $id): array
+    {
+        $query = sprintf("SELECT * FROM %s WHERE id = :id", self::getTableName());
+        $stmt = $this->dbo->prepare($query);
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
 
     public function findByVacancyId($vacancyId): array
     {
@@ -51,7 +58,7 @@ class VacancyResponseRepository extends AbstractRepository
         return $stmt->fetchAll();
     }
 
-    final static function getTableName(): string
+    final public static function getTableName(): string
     {
         return TableNames::VACANCY_RESPONSES;
     }
@@ -92,7 +99,7 @@ class VacancyResponseRepository extends AbstractRepository
         return (int)$this->dbo->lastInsertId();
     }
 
-    public function setAccepted(int $responseId)
+    public function setAccepted(int $responseId): void
     {
         $query = "UPDATE vacancy_responses SET is_accepted = 1 WHERE id = :id";
         $stmt = $this->dbo->prepare($query);

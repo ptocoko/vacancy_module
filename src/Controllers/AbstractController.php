@@ -31,7 +31,7 @@ abstract class AbstractController
     protected function json(array $data, int $httpResponseCode = 200): Response
     {
         SimpleRouter::response()->httpCode(200);
-        SimpleRouter::response()->json($data, 0, 512);
+        SimpleRouter::response()->json($data, JSON_PRETTY_PRINT, 512);
         return SimpleRouter::response();
     }
 

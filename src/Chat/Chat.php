@@ -6,6 +6,7 @@ namespace App\Chat;
 
 
 use App\Config\MessageTypes;
+use App\Domain\UserRoles;
 use App\Repository\DialogsRepository;
 use App\Repository\MessageRepository;
 use Exception;
@@ -35,9 +36,8 @@ class Chat implements MessageComponentInterface
 
     public function onOpen(ConnectionInterface $conn): void
     {
-        $conn->type = $_GET['work'] === '2' || $_GET['work'] === '6' ? 1 : 2;
-        $conn->id = (int)$_GET['id'];
         $conn->messageRepository = new MessageRepository();
+        $this->roomsRepository->parseDialogs();
         $this->clients->attach($conn);
     }
 
@@ -67,18 +67,24 @@ class Chat implements MessageComponentInterface
         if ($messageData = json_decode($msg, true)) {
             switch ($messageData['type']) {
                 case MessageTypes::INIT:
-                    $from->type = (int)$messageData['usrType'];
+                    $from->responseId = (int)$messageData['responseId'];
+                    $from->role = $messageData['role'];
                     $from->id = (int)$messageData['id'];
-                    $from->roomId = (int)$messageData['roomId'];
-                    $room = $this->roomsRepository->parseChatRooms()[$from->roomId];
-                    $participant = $room['roomParticipants'][$from->type];
-                    if (isset($room) && isset($participant) && $participant['id'] === $from->id) {
-                        $from->name = $participant['name'];
-                        $from->messageRepository->setPath(sprintf('room_%s', (string)$from->roomId));
+                    $dialog = $this->roomsRepository->findByResponseId((int)$from->responseId);
+                    if ($from->role === UserRoles::DIRECTOR) {
+                        $participant = $dialog->director;
+                    } elseif ($from->role === UserRoles::TEACHER) {
+                        $participant = $dialog->teacher;
+                    } else {
+                        $from->close();
+                    }
+                    if (isset($dialog, $participant) && $participant->id === $from->id) {
+                        $from->name = $participant->name;
+                        $from->messageRepository->setPath(sprintf('dialog_%s', (string)$from->responseId));
                         $outputData = [
                                 'type' => MessageTypes::INIT,
                                 'id' => $from->id,
-                                'data' => $from->messageRepository->getMessagesByRoom()
+                                'data' => $from->messageRepository->getMessagesByDialog()
                         ];
                         $from->send(json_encode($outputData, 0, 512));
                     } else {
@@ -89,7 +95,7 @@ class Chat implements MessageComponentInterface
                     if (!empty($messageData['text'])) {
                         $savedMessage = $from->messageRepository->saveMessage($from, $messageData['text']);
                         foreach ($this->clients as $client) {
-                            if ($client->roomId === $from->roomId) {
+                            if ($client->responseId === $from->responseId) {
                                 $outputData = ['type' => MessageTypes::MESSAGE, 'message' => $savedMessage];
                                 $client->send(json_encode($outputData));
                             }

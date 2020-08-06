@@ -21,7 +21,7 @@ class AreaRepository extends AbstractRepository
         return $stmt->fetchAll();
     }
 
-    final static function getTableName(): string
+    final public static function getTableName(): string
     {
         return TableNames::AREA;
     }

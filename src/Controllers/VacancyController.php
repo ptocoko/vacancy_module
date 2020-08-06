@@ -42,7 +42,7 @@ class VacancyController extends AbstractController
     /**
      * @return Response
      */
-    public function getSortedVacancies(): Response
+    public function showSorted(): Response
     {
         $areaCode = (int)$this->inputHandler->get('ac')->getValue();
         $schoolId = (string)$this->inputHandler->get('schid')->getValue();
@@ -69,7 +69,7 @@ class VacancyController extends AbstractController
     /**
      * @return Response
      */
-    public function getBySchool(): Response
+    public function showBySchool(): Response
     {
         $vacancies = $this->vacancyRepository->findBySchoolId(SimpleRouter::request()->user->schoolid);
         foreach ($vacancies as &$vacancy) {
@@ -82,7 +82,7 @@ class VacancyController extends AbstractController
      * @param int $id
      * @return string
      */
-    public function deleteVacancy(int $id): string
+    public function delete(int $id): string
     {
         return (string)$this->vacancyRepository->delete($id);
     }
@@ -90,7 +90,7 @@ class VacancyController extends AbstractController
     /**
      * @return Response
      */
-    public function postVacancy()
+    public function create(): Response
     {
         $positionId = (int)$this->inputHandler->post('pid')->getValue();
         if ($this->vacancyExists($positionId, SimpleRouter::request()->user->schoolid)) {
@@ -134,7 +134,7 @@ class VacancyController extends AbstractController
      * @param int $id
      * @return Response
      */
-    public function updateVacancy(int $id): Response
+    public function update(int $id): Response
     {
         $params = json_decode(file_get_contents("php://input"), true);
         $paymentValue = $params['payment'];
@@ -144,8 +144,19 @@ class VacancyController extends AbstractController
         if ($positionId !== null && $this->vacancyExists((int)$positionId, SimpleRouter::request()->user->schoolid)) {
             return $this->invalidRequest(406, "Такая вакансия уже существует");
         }
-        $vacancy = $this->vacancyRepository->updateVacancy($id, $positionId, $paymentValue, $experienceId, $dopInfo);
+        $vacancy = $this->vacancyRepository->updateVacancy(
+                $id,
+                $positionId,
+                (int)$paymentValue,
+                (int)$experienceId,
+                $dopInfo
+        );
         $vacancy['resp'] = [];
         return $this->json($vacancy, 200);
+    }
+
+    public function showResponses(int $id): Response
+    {
+        return $this->json($this->vacancyResponseRepository->findByVacancyId($id));
     }
 }

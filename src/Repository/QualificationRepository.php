@@ -10,7 +10,10 @@ use App\Config\TableNames;
 class QualificationRepository extends AbstractRepository
 {
 
-    public static function getTableName(): string
+    /**
+     * @return string
+     */
+    final public static function getTableName(): string
     {
         return TableNames::QUALIFICATION;
     }
