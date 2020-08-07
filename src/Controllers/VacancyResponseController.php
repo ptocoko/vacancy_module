@@ -7,12 +7,13 @@ namespace App\Controllers;
 
 use App\Domain\Dialog;
 use App\Domain\DialogParticipant;
-use App\Domain\UserRoles;
 use App\Repository\DialogsRepository;
 use App\Repository\ParticipantDirectorRepository;
 use App\Repository\VacancyResponseRepository;
-use Pecee\Http\Response;
 use Pecee\SimpleRouter\SimpleRouter;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class VacancyResponseController extends AbstractController
 {
@@ -45,11 +46,6 @@ class VacancyResponseController extends AbstractController
         $this->participantDirectorRepository = $participantDirectorRepository;
     }
 
-    public function getByVacancy(int $vacancyId): Response
-    {
-        return $this->json($this->vacancyResponseRepository->findByVacancyId($vacancyId));
-    }
-
     public function create()
     {
         $vacancyId = (int)$this->inputHandler->post('vid')->getValue();
@@ -71,19 +67,23 @@ class VacancyResponseController extends AbstractController
         );
     }
 
-    private function respondedAlready(
-            int $userId,
-            int $vacancyId
-    ): bool {
+    private function respondedAlready(int $userId, int $vacancyId): bool
+    {
         return $this->vacancyResponseRepository->countOfResponsesWith($userId, $vacancyId) > 0;
     }
 
-    public function delete(
-            int $id
-    ): string {
+    /**
+     * @param int $id
+     * @return string
+     */
+    public function delete(int $id): string
+    {
         return (string)$this->vacancyResponseRepository->delete($id);
     }
 
+    /**
+     * @param int $responseId
+     */
     public function accept(int $responseId): void
     {
         $teacherId = $this->vacancyResponseRepository->findById($responseId)['user_id'];
@@ -93,7 +93,29 @@ class VacancyResponseController extends AbstractController
         $this->dialogsRepository->save(new Dialog($responseId, $user, $teacher));
     }
 
-    public function getDialog(int $responseId)
+    /**
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function showUsersResponses(): string
+    {
+        $params = [
+                'responses' => $this->vacancyResponseRepository->findResponsesByUser(SimpleRouter::request()->user->id),
+                'name' => SimpleRouter::request()->user->name
+        ];
+        return $this->render('Responses.html.twig', $params);
+    }
+
+    /**
+     * @param int $responseId
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function getDialog(int $responseId): string
     {
         $user = SimpleRouter::request()->user;
         return $this->render(
@@ -101,7 +123,7 @@ class VacancyResponseController extends AbstractController
                 [
                         'name' => $user->getName(),
                         'id' => $user->id,
-                        'role' => UserRoles::DIRECTOR,
+                        'role' => $user->type,
                         'responseId' => $responseId
                 ]
         );

@@ -4,11 +4,11 @@ conn.onopen = function (e) {
 };
 button.on('click', (e) => {
     e.preventDefault();
-    msg.text = text.val();
     const sendMessage = {
         type: 'message',
         text: text.val()
     };
+    text.val('');
     conn.send(JSON.stringify(sendMessage));
 });
 conn.onmessage = function (e) {

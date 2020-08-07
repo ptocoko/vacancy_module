@@ -22,6 +22,11 @@ class VacancyResponseRepository extends AbstractRepository
         return $stmt->fetch();
     }
 
+    final public static function getTableName(): string
+    {
+        return TableNames::VACANCY_RESPONSES;
+    }
+
     public function findByVacancyId($vacancyId): array
     {
         $query = sprintf(
@@ -56,11 +61,6 @@ class VacancyResponseRepository extends AbstractRepository
         $stmt = $this->dbo->prepare($query);
         $stmt->execute(['id' => $vacancyId]);
         return $stmt->fetchAll();
-    }
-
-    final public static function getTableName(): string
-    {
-        return TableNames::VACANCY_RESPONSES;
     }
 
     public function countOfResponsesWith(int $userId, int $vacancyId): int
@@ -104,5 +104,35 @@ class VacancyResponseRepository extends AbstractRepository
         $query = "UPDATE vacancy_responses SET is_accepted = 1 WHERE id = :id";
         $stmt = $this->dbo->prepare($query);
         $stmt->execute(['id' => $responseId]);
+    }
+
+    public function findResponsesByUser(int $userId): array
+    {
+        $stmt = $this->dbo->prepare(
+                sprintf(
+                        "SELECT vr.id,
+                               response_comment,
+                               response_day,
+                               is_accepted,
+                               dop_info,
+                               zp as payment,
+                               sch.name as school,
+                               d.name as position,
+                               value as expirience
+                        FROM %s as vr
+                        JOIN %s v on vr.vacancy_id = v.id
+                        JOIN %s d on v.doljnost_id = d.id
+                        JOIN %s s on v.staj_id = s.id
+                        JOIN %s sch on v.schoolid = sch.id
+                        WHERE user_id = :id",
+                        self::getTableName(),
+                        VacancyRepository::getTableName(),
+                        PositionRepository::getTableName(),
+                        ExperienceRepository::getTableName(),
+                        SchoolRepository::getTableName()
+                )
+        );
+        $stmt->execute(['id' => $userId]);
+        return $stmt->fetchAll();
     }
 }

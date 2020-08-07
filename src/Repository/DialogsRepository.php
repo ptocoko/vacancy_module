@@ -33,20 +33,24 @@ class DialogsRepository
     public function parseDialogs(): void
     {
         $rooms = json_decode(file_get_contents($this->path), true);
-        foreach ($rooms as $room) {
-            $teacher = new User();
-            $teacher->id = $room['teacher']['id'];
-            $teacher->name = $room['teacher']['name'];
-            $teacher->surname = $room['teacher']['surname'];
-            $teacher->secondname = $room['teacher']['secondname'];
-            $teacher->schoolid = $room['teacher']['schoolid'];
-            $director = new User();
-            $director->id = $room['director']['id'];
-            $director->name = $room['director']['name'];
-            $director->surname = $room['director']['surname'];
-            $director->secondname = $room['director']['secondname'];
-            $director->schoolid = $room['director']['schoolid'];
-            $this->rooms[] = new Dialog($room['responseid'], $director, $teacher);
+        if (is_array($rooms) > 0) {
+            foreach ($rooms as $room) {
+                $teacher = new User();
+                $teacher->id = $room['teacher']['id'];
+                $teacher->name = $room['teacher']['name'];
+                $teacher->surname = $room['teacher']['surname'];
+                $teacher->secondname = $room['teacher']['secondname'];
+                $teacher->schoolid = $room['teacher']['schoolid'];
+                $director = new User();
+                $director->id = $room['director']['id'];
+                $director->name = $room['director']['name'];
+                $director->surname = $room['director']['surname'];
+                $director->secondname = $room['director']['secondname'];
+                $director->schoolid = $room['director']['schoolid'];
+                $this->rooms[] = new Dialog($room['responseid'], $director, $teacher);
+            }
+        } else {
+            $this->rooms = [];
         }
     }
 

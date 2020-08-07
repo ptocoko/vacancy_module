@@ -41,7 +41,6 @@ class MessageRepository
     {
         $messages = json_decode(file_get_contents($this->path), true);
         $message = [
-                'room' => $from->roomId,
                 'participantId' => $from->id,
                 'name' => $from->name,
                 'text' => Cryptor::Encrypt($text, getenv("SECRET_KEY")),

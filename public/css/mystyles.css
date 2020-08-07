@@ -114,7 +114,6 @@
 
 .my_check {
     flex: 0 0 calc(33.3333% - 16px) !important;
-    align-items: flex-end !important;
 }
 
 .lds-dual-ring {
@@ -151,6 +150,7 @@
 }
 
 .exit__btn {
+    background: #fff;
     cursor: pointer;
     border: 1px solid;
     padding: 1rem 1.5rem;
@@ -189,7 +189,7 @@
     color: #ffffff;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 768px) {
     .my_check {
         flex: 0 0 100% !important;
         justify-self: center !important;
@@ -234,10 +234,12 @@
 .msg {
     display: flex;
     align-items: flex-end;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 }
 
 .msg-bubble {
+    color: #ffffff !important;
+    font-size: 14px;
     max-width: 450px;
     padding: 15px;
     border-radius: 15px;

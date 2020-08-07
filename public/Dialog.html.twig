@@ -1,13 +1,16 @@
-{% extends 'layout.html.twig' %}
+{% extends 'Layout.html.twig' %}
 {% block title %}Диалог {{ name }}{% endblock %}
 {% block stylesheets %}
     <style>
         body {
             overflow: hidden;
         }
+
+        #msger_input {
+            border: 1px solid #1e3685;
+        }
     </style>
     <link rel="stylesheet" href="/public/css/chatinput.css">
-    <link rel="stylesheet" href="/public/css/mystyles.css">
 {% endblock %}
 
 {% block content %}
@@ -15,11 +18,9 @@
         <main class="msger-chat">
 
         </main>
-
-        <form class="chat-input-area">
-            <input id="msger_input" type="text" placeholder="Write something..." class="chat-input-area__input">
-            <button id="send_btn" type="submit" class="chat-input-area__submit-button"><i class="fa fa-paper-plane"
-                                                                                          aria-hidden="true"></i>
+        <form id="form" class="form my-1" style="display:flex;">
+            <input id="msger_input" type="text" placeholder="Сообщение" class="mx-1">
+            <button id="send_btn" type="submit" style="margin-right: 1rem;" class="px-1 btn btn--light">Отправить
             </button>
         </form>
     </section>

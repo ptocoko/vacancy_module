@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 
-use App\Domain\UserRoles;
+use App\Core\Routes;
 use App\Middleware\AuthenticatedUserDataTrait;
 use App\Repository\SchoolRepository;
 use DI\Annotation\Inject;
+use Pecee\SimpleRouter\SimpleRouter;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class IndexController extends AbstractController
 {
@@ -21,12 +25,63 @@ class IndexController extends AbstractController
     private $schoolRepository;
 
 
+    /**
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function index(): string
     {
-        if ($this->getAuthenticatedUser()->type === UserRoles::DIRECTOR) {
-            $params['school'] = $this->schoolRepository->findById($this->getAuthenticatedUser()->schoolid);
-            return $this->render('Director.html.twig', $params);
+        return $this->render('Login.html.twig', []);
+    }
+
+    public function login()
+    {
+        $val = $this->inputHandler->post('exp');
+        if ($val == 2) {
+            $_SESSION['id'] = "1253";
+            $_SESSION['work'] = '1';
+            SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'teacher');
+        } elseif ($val == 1) {
+            $_SESSION['id'] = "1251";
+            $_SESSION['work'] = '2';
+            SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'director');
         }
+    }
+
+    /**
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function teacher(): string
+    {
         return $this->render('Teacher.html.twig', []);
     }
+
+    /**
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function director(): string
+    {
+        $params['school'] = $this->schoolRepository->findById(SimpleRouter::request()->user->schoolid);
+        return $this->render('Director.html.twig', $params);
+    }
+
+    /**
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function notFound(): string
+    {
+        return $this->render('404.html.twig', []);
+    }
+
 }

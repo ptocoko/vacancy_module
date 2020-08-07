@@ -153,7 +153,7 @@ class Vacancy {
                                 }
                             }).fail((jqXHR, textStatus) => {
                                 $('.modal_form').hide().after(() => {
-                                    $('.modal-content').html(this.badModal(`Ошибка ${jqXHR.status} ${jqXHR.responseText}`))
+                                    $('.modal-content').html(this.badModal(`Что-то пошло не так`))
                                         .after(() => {
                                             this.modalCenter();
                                         })
