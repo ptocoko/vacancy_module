@@ -36,17 +36,23 @@ class IndexController extends AbstractController
         return $this->render('Login.html.twig', []);
     }
 
+    /**
+     * @return string|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function login()
     {
         $val = $this->inputHandler->post('exp');
-        if ($val == 2) {
-            $_SESSION['id'] = "1253";
-            $_SESSION['work'] = '1';
-            SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'teacher');
-        } elseif ($val == 1) {
+        if ($val == '1') {
             $_SESSION['id'] = "1251";
             $_SESSION['work'] = '2';
             SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'director');
+        } elseif ($val == '2') {
+            $_SESSION['id'] = "1253";
+            $_SESSION['work'] = '1';
+            SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'teacher');
         }
     }
 

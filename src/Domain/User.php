@@ -26,7 +26,6 @@ class User
      * @var string
      */
     public $secondname;
-
     /**
      * @return string
      */

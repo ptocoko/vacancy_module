@@ -25,6 +25,7 @@
     }
 
     .modal-overlay.active {
+        z-index: 150;
         opacity: 1;
         visibility: visible;
     }
@@ -97,15 +98,18 @@
 .modal.active {
     visibility: visible;
     opacity: 1;
+    z-index: 150;
     -webkit-transform: scale(1);
     transform: scale(1);
 }
 
 .modal.active .modal-content {
+    z-index: 150;
     opacity: 1;
 }
 
 .modal.active .close-modal {
+    z-index: 152;
     -webkit-transform: translateY(10px);
     transform: translateY(10px);
     opacity: 1;

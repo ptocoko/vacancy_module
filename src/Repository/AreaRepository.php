@@ -28,7 +28,7 @@ class AreaRepository extends AbstractRepository
 
     public function findByCode(int $code): array
     {
-        $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE Code= :code", $this::getTableName()));
+        $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE Code = :code", $this::getTableName()));
         $stmt->execute([':code' => $code]);
         return $stmt->fetchAll();
     }

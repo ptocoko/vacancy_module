@@ -240,7 +240,7 @@ class VacancyRepository extends AbstractRepository
 
     /**
      * @param int $id
-     * @param int $positionId
+     * @param string $positionId
      * @param int $paymentValue
      * @param int $experienceId
      * @param string $dopInfo
@@ -263,18 +263,14 @@ class VacancyRepository extends AbstractRepository
         if (!empty($dopInfo)) {
             $params['dop_info'] = $dopInfo;
         }
-        $sql = sprintf(
-                "UPDATE %s
-                        SET ",
-                $this::getTableName()
-        );
+        $sql = sprintf("UPDATE %s SET ", $this::getTableName());
         foreach ($params as $key => $value) {
             $sql .= " {$key} = '{$value}',";
         }
         $sql = trim($sql, ',');
-        $sql .= sprintf(" WHERE id = %s", $id);
-        $stmt = $this->dbo->query($sql);
-        $stmt->execute();
+        $sql .= " WHERE id = :id";
+        $stmt = $this->dbo->prepare($sql);
+        $stmt->execute(['id' => $id]);
         return $this->findById($id);
     }
 }

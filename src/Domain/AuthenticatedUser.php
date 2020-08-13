@@ -13,6 +13,11 @@ class AuthenticatedUser extends User
      */
     public $type;
 
+    /**
+     * @var string
+     */
+    public $areas;
+
     public function __construct()
     {
         $this->type = $_SESSION['work'] === '2' || $_SESSION['work'] === '6' ? UserRoles::DIRECTOR : UserRoles::TEACHER;

@@ -5,6 +5,7 @@ namespace App\Core;
 
 
 use App\Controllers\IndexController;
+use App\Controllers\RsurTestController;
 use App\Controllers\VacancyController;
 use App\Controllers\VacancyResponseController;
 use App\Middleware\ApiMiddleWare;
@@ -59,11 +60,14 @@ class Routes
         SimpleRouter::partialGroup(
                 self::BASE_ROUTE,
                 static function () {
+
                     self::setApiRoutes();
+
                     /**
                      * @see IndexController::index()
                      */
                     SimpleRouter::get('/teacher', 'IndexController@teacher');
+
                     /**
                      * @see IndexController::index()
                      */
@@ -72,6 +76,7 @@ class Routes
                             'IndexController@director',
                             ['middleware' => DirectorAuthMiddleWare::class]
                     );
+
                     /**
                      * @see VacancyResponseController::showUsersResponses()
                      */
@@ -80,6 +85,7 @@ class Routes
                             'VacancyResponseController@showUsersResponses',
                             ['middleware' => TeacherAuthMiddleWare::class]
                     );
+
                     /**
                      * @see VacancyResponseController::getDialog()
                      */
@@ -88,12 +94,17 @@ class Routes
                             'VacancyResponseController@getDialog',
                             ['middleware' => AuthMiddleware::class]
                     )->where(['responseid' => '[0-9]+']);
+
                     /**
                      * @see IndexController
                      */
                     SimpleRouter::get('/', 'IndexController@index');
                     SimpleRouter::post('/', 'IndexController@login');
                     SimpleRouter::get(self::NOT_FOUND, 'IndexController@notFound');
+                    /**
+                     * @see RsurTestController::getTestsWithSubjects()
+                     */
+                    SimpleRouter::get('/tests', 'RsurTestController@getTestsWithSubjects');
                 }
         );
     }
@@ -124,7 +135,7 @@ class Routes
                                  */
                                 SimpleRouter::get(
                                         '/{code}/schools',
-                                        'AreaController@getSchoolsByArea'
+                                        'AreaController@showSchools'
                                 )->where(
                                         ['code' => '[0-9]+']
                                 );

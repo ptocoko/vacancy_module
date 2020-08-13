@@ -14,6 +14,12 @@ abstract class AbstractRepository
      */
     protected $dbo;
 
+    protected $primary = 'id';
+    /**
+     * @var mixed
+     */
+    protected $result;
+
     /**
      * @var string
      */
@@ -24,15 +30,22 @@ abstract class AbstractRepository
 
     public function findAll(): array
     {
-        $stmt = $this->dbo->query('SELECT * FROM ' . static::getTableName());
-        return $stmt->fetchAll() ?? [];
+        $stmt = $this->dbo->query(sprintf('SELECT * FROM %s', static::getTableName()));
+        return $stmt->fetchAll();
     }
 
     abstract public static function getTableName(): string;
 
+    public function find($primaryValue): array
+    {
+        $stmt = $this->dbo->prepare(sprintf('SELECT * FROM %s WHERE %s = :id', static::getTableName(), $this->primary));
+        $stmt->execute(['id' => $primaryValue]);
+        return $stmt->fetch();
+    }
+
     public function delete(int $id): int
     {
-        $stmt = $this->dbo->prepare(sprintf('DELETE  from %s WHERE id = :id', static::getTableName()));
+        $stmt = $this->dbo->prepare(sprintf('DELETE FROM %s WHERE id = :id', static::getTableName()));
         $stmt->execute([':id' => $id]);
         return $id;
     }

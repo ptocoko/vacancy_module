@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 
 use App\Repository\PositionRepository;
+use Pecee\Http\Response;
 
 class PositionController extends AbstractController
 {
@@ -24,9 +25,9 @@ class PositionController extends AbstractController
     }
 
     /**
-     * @return string
+     * @return Response
      */
-    public function index(): string
+    public function index(): Response
     {
         return $this->json($this->repository->findAll());
     }
