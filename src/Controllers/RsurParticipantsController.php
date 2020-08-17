@@ -22,12 +22,7 @@ class RsurParticipantsController extends AbstractController
 
     public function getParticipantsWithBadGradesByTest(int $testId): Response
     {
-        $date = $this->inputHandler->get('date')->getValue();
-        $participants = $this->participantRepository->findBySchoolWithBadGradesByTest(
-                '0014',
-                $testId,
-                $date
-        );
+        $participants = $this->participantRepository->findBySchoolWithBadGradesByTest('0014', $testId);
         return $this->json($participants);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 
+use App\Core\Routes;
 use DI\Annotation\Inject;
 use Pecee\Http\Input\InputHandler;
 use Pecee\Http\Response;
@@ -53,6 +54,7 @@ abstract class AbstractController
      */
     protected function render(string $template, array $params): string
     {
+        $this->view->addGlobal('baseroute', Routes::BASE_ROUTE);
         return $this->view->load($template)->render($params);
     }
 }

@@ -1,0 +1,85 @@
+<div class="base">
+    <form class="form">
+        <div class="base-box">
+            <label>
+                <span>Тестирование</span>
+                <select name="test" id="test">
+                    <option value="0" selected>Выберите тест</option>
+                    {% for test in tests %}
+                        <option id="select_{{ test.test_id }}" year="{{ test.year_id }}"
+                                subject="{{ test.subject_code }}" value="{{ test.test_id }}"> {{ test.year }}
+                            - {{ test.subject }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <div class="rating-box mx-1 mt-1" id="cards">
+
+        </div>
+
+    </form>
+</div>
+
+{% block js %}
+    <script>
+        const testsElement = $('#test');
+        testsElement.on('change', function () {
+            if (testsElement.val() != 0) {
+                getParticipants(testsElement.val()).then(function (res) {
+                    if (res.length > 0) {
+                        res.map(function (x) {
+                            $('#cards').html(renderName(x)).after(function () {
+                                setHandler(x)
+                                let elem = $(`#select_${testsElement.val()}`);
+                                getTest(elem.attr('year'), elem.attr('subject')).then(function (result) {
+                                    console.log($(`#accord_${x.code}`));
+                                    $(`#accord_${x.code}`).append(renderBlocks(result));
+                                })
+                            });
+                        });
+                    } else {
+                        $('#cards').html('<h4>Ничего не найдено</h4>')
+                    }
+                })
+            } else {
+                $('#cards').html('');
+            }
+        });
+
+        function renderName(x) {
+            return `<div class="accordion name" id="accord_${x.code}">
+                    <div class="accordion-name" id="block_${x.code}">
+                        <p class="small font-weight-normal text-uppercase lts-2px"
+                           style="cursor: pointer;"><b>${x.surname} ${x.name} ${x.secondname}</b>
+                        </p>
+                    </div>
+
+                </div>`
+        }
+
+        function setHandler(x) {
+            $(`#block_${x.code}`).on('click', function (e) {
+                e.preventDefault();
+                $(this).closest('.accordion').toggleClass('active');
+                $(this).closest('.accordion').find('.accordion-content').stop().slideToggle(500);
+            })
+        }
+
+        function renderBlocks(res) {
+            return `<div class="accordion-content mx-2 pb-1" style="display: flex">
+                    ${getTestBlock(res.in)}
+                    ${res.elements.map(x => {
+                        return getTestBlock(x)
+                    }).join('')}
+                    ${res.out.code === 'none' ? '<div class="mx-1" style="width: 10px;height: 10px;background-color: blue"></div>' : getTestBlock(res.out)}
+                    </div>`
+        }
+
+        function getTestBlock(insides) {
+            if (insides.actual !== undefined && insides.max !== undefined)
+                return '<div class="mx-1" style="width: 10px;height: 10px;background-color: blue"></div>'
+            else
+                return '<div class="mx-1" style="width: 10px;height: 10px;background-color: red"></div>'
+        }
+    </script>
+{% endblock %}

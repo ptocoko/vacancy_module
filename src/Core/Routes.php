@@ -20,27 +20,20 @@ use Twig\Loader\LoaderInterface;
 
 class Routes
 {
-    public const BASE_ROUTE = '/';
+    public const BASE_ROUTE = 'vacancy_module/';
     public const AREAS_ROUTE = 'areas';
     public const SCHOOLS_ROUTE = 'schools';
     public const VACANCY_ROUTE = 'vacancies';
     public const VACANCY_RESPONSE_ROUTE = 'vacancy_responses';
     public const POSITION_ROUTE = 'positions';
     public const NOT_FOUND = 'not_found';
+    public const TESTS_ROUTE = 'tests';
 
     public static function init(): void
     {
         self::config();
         self::setRoutes();
-//        try {
         SimpleRouter::start();
-//        } catch (TokenMismatchException $e) {
-//            SimpleRouter::response()->redirect(self::NOT_FOUND);
-//        } catch (NotFoundHttpException $e) {
-//            SimpleRouter::response()->redirect(self::NOT_FOUND);
-//        } catch (HttpException $e) {
-//            SimpleRouter::response()->redirect(self::NOT_FOUND);
-//        }
     }
 
     private static function config(): void
@@ -62,20 +55,18 @@ class Routes
                 self::BASE_ROUTE,
                 static function () {
                     self::setApiRoutes();
-
                     /**
-                     * @see IndexController::index()
+                     * @see IndexController::teacher()
                      */
-                    SimpleRouter::get('/teacher', 'IndexController@teacher');
-
+                    SimpleRouter::get('/teacher', 'IndexController@teacher')->name('teacher');
                     /**
-                     * @see IndexController::index()
+                     * @see IndexController::director()
                      */
                     SimpleRouter::get(
-                            '/director',
-                            'IndexController@director',
-                            ['middleware' => DirectorAuthMiddleWare::class]
-                    );
+                        '/director',
+                        'IndexController@director',
+                        ['middleware' => DirectorAuthMiddleWare::class]
+                    )->name('director');
 
                     /**
                      * @see VacancyResponseController::showUsersResponses()
@@ -90,31 +81,40 @@ class Routes
                      * @see VacancyResponseController::getDialog()
                      */
                     SimpleRouter::get(
-                            self::VACANCY_RESPONSE_ROUTE . '/{responseid}/dialog',
-                            'VacancyResponseController@getDialog',
-                            ['middleware' => AuthMiddleware::class]
+                        self::VACANCY_RESPONSE_ROUTE.'/{responseid}/dialog',
+                        'VacancyResponseController@getDialog',
+                        ['middleware' => AuthMiddleware::class]
                     )->where(['responseid' => '[0-9]+']);
 
                     /**
-                     * @see IndexController
+                     * @see IndexController::index()
                      */
                     SimpleRouter::get('/', 'IndexController@index');
+
+                    /**
+                     * @see IndexController::login
+                     */
                     SimpleRouter::post('/', 'IndexController@login');
+
+                    /**
+                     * @see IndexController::notFound
+                     */
                     SimpleRouter::get(self::NOT_FOUND, 'IndexController@notFound');
+
+
+
+
                     /**
-                     * @see RsurTestController::getSubjectsWithDates()
+                     * @see IndexController::card
                      */
-                    SimpleRouter::get('/tests', 'RsurTestController@getSubjectsWithDates');
-                    /**
-                     * @see RsurTestController::getTestsAndElements()
-                     */
-                    SimpleRouter::get('{year}/tests/{subject}', 'RsurTestController@getTestsAndElements');
+                    SimpleRouter::get('/card', 'IndexController@card')->name('card');
+
                     /**
                      * @see RsurParticipantsController::getParticipantsWithBadGradesByTest()
                      */
                     SimpleRouter::get(
-                            '/particips/{testid}',
-                            'RsurParticipantsController@getParticipantsWithBadGradesByTest'
+                        '/particips/{testid}',
+                        'RsurParticipantsController@getParticipantsWithBadGradesByTest'
                     );
                 }
         );
@@ -266,6 +266,13 @@ class Routes
                             'VacancyResponseController@accept',
                             ['middleware' => AuthMiddleware::class]
                     )->where(['resposneId' => '[0-9]+']);
+
+                    SimpleRouter::partialGroup(self::TESTS_ROUTE, static function (){
+                        /**
+                         * @see RsurTestController::getTestsAndElements()
+                         */
+                        SimpleRouter::get('/get_by_selection', 'RsurTestController@getTestsAndElements');
+                    });
                 }
         );
     }

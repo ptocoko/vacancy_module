@@ -18,7 +18,7 @@ class ApiMiddleWare implements IMiddleware
     public function handle(Request $request): void
     {
         if (!$request->isAjax()) {
-            SimpleRouter::response()->redirect(Routes::BASE_ROUTE);
+            SimpleRouter::response()->redirect(url(''));
         }
     }
 }

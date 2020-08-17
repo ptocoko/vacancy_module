@@ -7,8 +7,8 @@ namespace App\Controllers;
 
 use App\Core\Routes;
 use App\Middleware\AuthenticatedUserDataTrait;
+use App\Repository\RsurYearsRepository;
 use App\Repository\SchoolRepository;
-use DI\Annotation\Inject;
 use Pecee\SimpleRouter\SimpleRouter;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -19,11 +19,19 @@ class IndexController extends AbstractController
     use AuthenticatedUserDataTrait;
 
     /**
-     * @Inject
      * @var SchoolRepository
      */
     private $schoolRepository;
+    /**
+     * @var RsurYearsRepository
+     */
+    private RsurYearsRepository $rsurYearsRepository;
 
+    public function __construct(SchoolRepository $schoolRepository, RsurYearsRepository $rsurYearsRepository)
+    {
+        $this->schoolRepository = $schoolRepository;
+        $this->rsurYearsRepository = $rsurYearsRepository;
+    }
 
     /**
      * @return string
@@ -33,26 +41,25 @@ class IndexController extends AbstractController
      */
     public function index(): string
     {
-        return $this->render('Login.html.twig', []);
+        return $this->render('Login.html.twig', ['baseroute' => Routes::BASE_ROUTE]);
     }
 
     /**
-     * @return string|null
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     *
      */
-    public function login()
+    public function login(): void
     {
-        $val = $this->inputHandler->post('exp');
-        if ($val == '1') {
+        $val = (int)input('exp', 0);
+        if ($val === 1) {
             $_SESSION['id'] = "1251";
             $_SESSION['work'] = '2';
-            SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'director');
-        } elseif ($val == '2') {
+            redirect(url('director')->getPath());
+        } elseif ($val === 2) {
             $_SESSION['id'] = "1253";
             $_SESSION['work'] = '1';
-            SimpleRouter::response()->redirect(Routes::BASE_ROUTE . 'teacher');
+            redirect(url('teacher')->getPath());
+        } elseif ($val === 3) {
+            redirect(url('card')->getPath());
         }
     }
 
@@ -90,4 +97,9 @@ class IndexController extends AbstractController
         return $this->render('404.html.twig', []);
     }
 
+    public function card(): string
+    {
+        $years = $this->rsurYearsRepository->findAll();
+        return $this->render('CardBlanket.html.twig', ['tests' => $years]);
+    }
 }

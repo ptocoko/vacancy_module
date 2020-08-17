@@ -1,12 +1,18 @@
-const baseUrl = 'http://vacancy.test';
+const baseUrl = 'http://localhost/vacancy_module';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 const getAreas = async () => {
     const {data} = await axios.get(`${baseUrl}/areas`);
     return data;
 };
 
-const getDialogs = async () => {
-    const {data} = await axios.get(`${baseUrl}/dialogs`);
+const getParticipants = async (testid) => {
+    const {data} = await axios.get(`${baseUrl}/particips/${testid}`)
+    return data;
+};
+
+const getTest = async (yearId, subjectCode) => {
+    const {data} = await axios.get(`${baseUrl}/tests/get_by_selection?year=${yearId}&subject=${subjectCode}`)
+    console.log(data);
     return data;
 };
 

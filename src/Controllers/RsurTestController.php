@@ -34,19 +34,14 @@ class RsurTestController extends AbstractController
         $this->rsurElementsRepository = $rsurElementsRepository;
     }
 
-    public function getSubjectsWithDates(): Response
+    public function getTestsAndElements(): Response
     {
-        return $this->json($this->rsurTestsRepository->findSubjectsWithDates());
-    }
+        $year = (int)$this->inputHandler->get('year')->getValue();
+        $subject = (int)$this->inputHandler->get('subject')->getValue();
+        $tests['in'] = $this->rsurTestsRepository->findTestByYearSubjectAndType($year, $subject, 1);
+        $tests['out'] = $this->rsurTestsRepository->findTestByYearSubjectAndType($year, $subject, 2);
+        $tests['elements'] = $this->rsurElementsRepository->where('test_id', $tests['in']['id']);
 
-    public function getTestsAndElements(int $year, int $subject): Response
-    {
-        $tests = $this->rsurTestsRepository->findInTestByYearAndSubject($year, $subject);
-        foreach ($tests as &$test) {
-            if ((int)$test['rsur_test_type_id'] === 1) {
-                $test['elements'] = $this->rsurElementsRepository->where('test_id', $test['id']);
-            }
-        }
         return $this->json($tests);
     }
 }
