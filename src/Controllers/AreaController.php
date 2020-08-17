@@ -10,6 +10,9 @@ use Pecee\Http\Response;
 
 class AreaController extends AbstractController
 {
+    /**
+     * @var AreaRepository
+     */
     private $areaRepository;
     /**
      * @var SchoolRepository
@@ -41,7 +44,7 @@ class AreaController extends AbstractController
      */
     public function show(int $code): Response
     {
-        return $this->json($this->areaRepository->findByCode($code), 200);
+        return $this->json($this->areaRepository->find($code), 200);
     }
 
     /**

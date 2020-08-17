@@ -25,6 +25,7 @@ class TableNames
             'tests_type' => 'rsur_tests_type',
             'sub_elements' => 'rsur_sub_elements',
             'sub_generated_test' => 'rsur_sub_generated_test',
-            'sub_results' => 'rsur_sub_results'
+            'sub_results' => 'rsur_sub_results',
+            'years' => 'rsur_years'
     ];
 }

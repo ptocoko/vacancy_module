@@ -5,29 +5,29 @@ namespace App\Controllers;
 
 
 use App\Repository\RsurParticipantRepository;
-use App\Repository\RsurTestsRepository;
+use Pecee\Http\Response;
 
 class RsurParticipantsController extends AbstractController
 {
-    /**
-     * @var RsurTestsRepository
-     */
-    private $rsurTestsRepository;
+
     /**
      * @var RsurParticipantRepository
      */
     private $participantRepository;
 
-    public function __construct(
-            RsurTestsRepository $rsurTestsRepository,
-            RsurParticipantRepository $participantRepository
-    ) {
-        $this->rsurTestsRepository = $rsurTestsRepository;
+    public function __construct(RsurParticipantRepository $participantRepository)
+    {
         $this->participantRepository = $participantRepository;
     }
 
-    public function getParticipantsWithBadGradesByTest(int $testId)
+    public function getParticipantsWithBadGradesByTest(int $testId): Response
     {
-        $participants = $this->participantRepository->findBySchool(000000);
+        $date = $this->inputHandler->get('date')->getValue();
+        $participants = $this->participantRepository->findBySchoolWithBadGradesByTest(
+                '0014',
+                $testId,
+                $date
+        );
+        return $this->json($participants);
     }
 }

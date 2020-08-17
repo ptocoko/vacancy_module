@@ -10,7 +10,7 @@ use App\Config\TableNames;
 class RsurParticipantRepository extends AbstractRepository
 {
 
-    public function findBySchoolWithBadGradesByTest(string $schoolId, int $testId): array
+    public function findBySchoolWithBadGradesByTest(string $schoolId, int $testId, string $date): array
     {
         $sql = sprintf(
                 "SELECT code,
@@ -19,23 +19,22 @@ class RsurParticipantRepository extends AbstractRepository
                        secondname,
                        school_id,
                        actualcode,
-                       rr.id as result_id,
                        sum_marks,
                        subjectcode,
                        generatedtesthash,
                        grade,
-                       rt.id as test_id,
                        comment,
                        min,
                        max,
                        data,
                        rsur_test_type_id
                 FROM %s AS rp
-                         JOIN %s rr ON rr.rsur_particip_code = rp.code
-                         JOIN %s rt on rr.test_id = rt.id
+                         LEFT OUTER JOIN %s rr ON rr.rsur_particip_code = rp.code
+                         LEFT OUTER JOIN %s rt on rr.test_id = rt.id
                 WHERE rp.school_id = :schoolid
                   AND rt.id = :testid
                   AND rr.grade = 2
+                  AND rt.data = :date
                   AND rt.actual = %d
                   AND rp.actualcode = %d",
                 $this::getTableName(),
@@ -45,7 +44,7 @@ class RsurParticipantRepository extends AbstractRepository
                 StoredDataTypes::IS_ACTUAL
         );
         $stmt = $this->dbo->prepare($sql);
-        $stmt->execute(['schoolid' => $schoolId, 'testid' => $testId]);
+        $stmt->execute(['schoolid' => $schoolId, 'testid' => $testId, 'date' => $date]);
         return $stmt->fetchAll();
     }
 

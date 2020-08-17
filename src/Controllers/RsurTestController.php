@@ -4,8 +4,10 @@
 namespace App\Controllers;
 
 
+use App\Repository\RsurElementsRepository;
 use App\Repository\RsurSubjectsRepository;
 use App\Repository\RsurTestsRepository;
+use Pecee\Http\Response;
 
 class RsurTestController extends AbstractController
 {
@@ -17,20 +19,33 @@ class RsurTestController extends AbstractController
      * @var RsurSubjectsRepository
      */
     private $rsurSubjectsRepository;
+    /**
+     * @var RsurElementsRepository
+     */
+    private $rsurElementsRepository;
 
     public function __construct(
             RsurTestsRepository $rsurTestsRepository,
-            RsurSubjectsRepository $rsurSubjectsRepository
+            RsurSubjectsRepository $rsurSubjectsRepository,
+            RsurElementsRepository $rsurElementsRepository
     ) {
         $this->rsurTestsRepository = $rsurTestsRepository;
         $this->rsurSubjectsRepository = $rsurSubjectsRepository;
+        $this->rsurElementsRepository = $rsurElementsRepository;
     }
 
-    public function getTestsWithSubjects()
+    public function getSubjectsWithDates(): Response
     {
-        $tests = $this->rsurTestsRepository->findAll();
+        return $this->json($this->rsurTestsRepository->findSubjectsWithDates());
+    }
+
+    public function getTestsAndElements(int $year, int $subject): Response
+    {
+        $tests = $this->rsurTestsRepository->findInTestByYearAndSubject($year, $subject);
         foreach ($tests as &$test) {
-            $test['subject'] = $this->rsurSubjectsRepository->find($test['rsur_subject_code']);
+            if ((int)$test['rsur_test_type_id'] === 1) {
+                $test['elements'] = $this->rsurElementsRepository->where('test_id', $test['id']);
+            }
         }
         return $this->json($tests);
     }

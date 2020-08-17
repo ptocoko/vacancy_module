@@ -13,15 +13,31 @@ abstract class AbstractRepository
      * @var Dbo
      */
     protected $dbo;
-
-    protected $primary = 'id';
-    /**
-     * @var mixed
-     */
-    protected $result;
-
     /**
      * @var string
+     */
+    protected $primary = 'id';
+    /**
+     * @var bool
+     */
+    protected $isSoftDelete;
+    /**
+     * @var string
+     */
+    protected $actualColumn = 'actual';
+    /**
+     * @var string
+     */
+    protected $actualValue = '1';
+    /**
+     * @var string
+     */
+    protected $archiveValue = '0';
+
+
+    /**
+     * AbstractRepository constructor.
+     * @param Dbo $dbo
      */
     public function __construct(Dbo $dbo)
     {
@@ -30,23 +46,73 @@ abstract class AbstractRepository
 
     public function findAll(): array
     {
-        $stmt = $this->dbo->query(sprintf('SELECT * FROM %s', static::getTableName()));
+        if ($this->isSoftDelete) {
+            $sql = sprintf(
+                    'SELECT * FROM %s WHERE %s = %s',
+                    static::getTableName(),
+                    $this->actualColumn,
+                    $this->actualValue
+            );
+        } else {
+            $sql = sprintf('SELECT * FROM %s', static::getTableName());
+        }
+        $stmt = $this->dbo->query($sql);
         return $stmt->fetchAll();
     }
 
     abstract public static function getTableName(): string;
 
+    public function where(string $column, $value): array
+    {
+        if ($this->isSoftDelete) {
+            $sql = sprintf(
+                    'SELECT * FROM %s WHERE %s = :value AND %s = %s',
+                    static::getTableName(),
+                    $column,
+                    $this->actualColumn,
+                    $this->actualValue
+            );
+        } else {
+            $sql = sprintf('SELECT * FROM %s WHERE %s = :value ', static::getTableName(), $column);
+        }
+        $stmt = $this->dbo->prepare($sql);
+        $stmt->execute(['value' => $value]);
+        return $stmt->fetchAll();
+    }
+
     public function find($primaryValue): array
     {
-        $stmt = $this->dbo->prepare(sprintf('SELECT * FROM %s WHERE %s = :id', static::getTableName(), $this->primary));
+        if ($this->isSoftDelete) {
+            $sql = sprintf(
+                    'SELECT * FROM %s WHERE %s = :id AND %s = %s',
+                    static::getTableName(),
+                    $this->primary,
+                    $this->actualColumn,
+                    $this->actualValue
+            );
+        } else {
+            $sql = sprintf('SELECT * FROM %s WHERE %s = :id', static::getTableName(), $this->primary);
+        }
+        $stmt = $this->dbo->prepare($sql);
         $stmt->execute(['id' => $primaryValue]);
         return $stmt->fetch();
     }
 
-    public function delete(int $id): int
+    public function delete($primary): int
     {
-        $stmt = $this->dbo->prepare(sprintf('DELETE FROM %s WHERE id = :id', static::getTableName()));
-        $stmt->execute([':id' => $id]);
-        return $id;
+        if ($this->isSoftDelete) {
+            $sql = sprintf(
+                    'UPDATE %s SET %s = %s WHERE %s = :id',
+                    static::getTableName(),
+                    $this->actualColumn,
+                    $this->primary,
+                    $this->archiveValue
+            );
+        } else {
+            $sql = sprintf('DELETE FROM %s WHERE %s = :id', static::getTableName(), $this->primary);
+        }
+        $stmt = $this->dbo->prepare($sql);
+        $stmt->execute(['primary' => $primary]);
+        return $primary;
     }
 }

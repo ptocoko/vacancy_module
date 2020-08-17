@@ -14,22 +14,14 @@ use DI\Annotation\Injectable;
  */
 class AreaRepository extends AbstractRepository
 {
+    protected $primary = 'Code';
+    protected $isSoftDelete = true;
+    protected $actualValue = "''";
+    protected $actualColumn = 'ActualCode';
 
-    public function findAll(): array
-    {
-        $stmt = $this->dbo->query("SELECT * FROM {$this::getTableName()} WHERE Actualcode = ''");
-        return $stmt->fetchAll();
-    }
 
     final public static function getTableName(): string
     {
         return TableNames::AREA;
-    }
-
-    public function findByCode(int $code): array
-    {
-        $stmt = $this->dbo->prepare(sprintf("SELECT * FROM %s WHERE Code = :code", $this::getTableName()));
-        $stmt->execute([':code' => $code]);
-        return $stmt->fetchAll();
     }
 }

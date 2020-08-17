@@ -5,6 +5,7 @@ namespace App\Core;
 
 
 use App\Controllers\IndexController;
+use App\Controllers\RsurParticipantsController;
 use App\Controllers\RsurTestController;
 use App\Controllers\VacancyController;
 use App\Controllers\VacancyResponseController;
@@ -60,7 +61,6 @@ class Routes
         SimpleRouter::partialGroup(
                 self::BASE_ROUTE,
                 static function () {
-
                     self::setApiRoutes();
 
                     /**
@@ -102,9 +102,20 @@ class Routes
                     SimpleRouter::post('/', 'IndexController@login');
                     SimpleRouter::get(self::NOT_FOUND, 'IndexController@notFound');
                     /**
-                     * @see RsurTestController::getTestsWithSubjects()
+                     * @see RsurTestController::getSubjectsWithDates()
                      */
-                    SimpleRouter::get('/tests', 'RsurTestController@getTestsWithSubjects');
+                    SimpleRouter::get('/tests', 'RsurTestController@getSubjectsWithDates');
+                    /**
+                     * @see RsurTestController::getTestsAndElements()
+                     */
+                    SimpleRouter::get('{year}/tests/{subject}', 'RsurTestController@getTestsAndElements');
+                    /**
+                     * @see RsurParticipantsController::getParticipantsWithBadGradesByTest()
+                     */
+                    SimpleRouter::get(
+                            '/particips/{testid}',
+                            'RsurParticipantsController@getParticipantsWithBadGradesByTest'
+                    );
                 }
         );
     }
