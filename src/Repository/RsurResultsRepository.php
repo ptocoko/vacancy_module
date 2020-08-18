@@ -29,7 +29,10 @@ class RsurResultsRepository extends AbstractRepository
                 $this::getTableName()
         );
         $stmt = $this->dbo->prepare($sql);
-        $stmt->execute(['testid' => $testId, 'participcode' => $participantCode]);
-        return $stmt->fetch();
+        $stmt->execute(['testid' => $testId, 'participocde' => $participantCode]);
+        if ($result = $stmt->fetch()) {
+            return $result;
+        }
+        return [];
     }
 }

@@ -77,7 +77,7 @@ abstract class AbstractRepository
         }
         $stmt = $this->dbo->prepare($sql);
         $stmt->execute(['value' => $value]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll() ?? [];
     }
 
     public function find($primaryValue): array

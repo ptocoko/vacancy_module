@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="{{ baseroute }}public/css/blocks.css">
+{% if tests %}
+    <div class="parent">
+        <div id="test_{{ tests.incoming.id }}" class="test">
+            <p>{{ tests.incoming.result }}%</p>
+        </div>
+        {% set counter =1 %}
+        {% for element in tests.incoming.elements %}
+            <div id="elem_{{ element.id }}" {% if element.enable == 1 %} onclick="getSubs(this.id)" {% endif %}
+                 class="element {% if element.enable != 1 %} early {% endif %} ">
+                <p class="ready">{{ counter }} - {{ element.result }}%</p>
+            </div>
+            {% set counter = counter + 1 %}
+        {% endfor %}
+        <div id="test_{{ tests.out.id }}" class="test">
+            <p>{{ tests.out.result }}%</p>
+        </div>
+    </div>
+{% endif %}
+

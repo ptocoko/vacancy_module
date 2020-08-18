@@ -20,7 +20,7 @@ use Twig\Loader\LoaderInterface;
 
 class Routes
 {
-    public const BASE_ROUTE = 'vacancy_module/';
+    public const BASE_ROUTE = '/';
     public const AREAS_ROUTE = 'areas';
     public const SCHOOLS_ROUTE = 'schools';
     public const VACANCY_ROUTE = 'vacancies';
@@ -113,8 +113,18 @@ class Routes
                      * @see RsurParticipantsController::getParticipantsWithBadGradesByTest()
                      */
                     SimpleRouter::get(
-                        '/particips/{testid}',
-                        'RsurParticipantsController@getParticipantsWithBadGradesByTest'
+                            '/particips/{testid}',
+                            'RsurParticipantsController@getParticipantsWithBadGradesByTest'
+                    );
+
+                    SimpleRouter::partialGroup(
+                            self::TESTS_ROUTE,
+                            static function () {
+                                /**
+                                 * @see RsurTestController::getTestsAndElements()
+                                 */
+                                SimpleRouter::get('/get_by_selection', 'RsurTestController@getTestsAndElements');
+                            }
                     );
                 }
         );
@@ -267,12 +277,6 @@ class Routes
                             ['middleware' => AuthMiddleware::class]
                     )->where(['resposneId' => '[0-9]+']);
 
-                    SimpleRouter::partialGroup(self::TESTS_ROUTE, static function (){
-                        /**
-                         * @see RsurTestController::getTestsAndElements()
-                         */
-                        SimpleRouter::get('/get_by_selection', 'RsurTestController@getTestsAndElements');
-                    });
                 }
         );
     }

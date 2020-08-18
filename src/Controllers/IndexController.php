@@ -25,7 +25,7 @@ class IndexController extends AbstractController
     /**
      * @var RsurYearsRepository
      */
-    private RsurYearsRepository $rsurYearsRepository;
+    private $rsurYearsRepository;
 
     public function __construct(SchoolRepository $schoolRepository, RsurYearsRepository $rsurYearsRepository)
     {

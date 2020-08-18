@@ -54,7 +54,9 @@ abstract class AbstractController
      */
     protected function render(string $template, array $params): string
     {
-        $this->view->addGlobal('baseroute', Routes::BASE_ROUTE);
+        $baseroute = Routes::BASE_ROUTE === '/' ? Routes::BASE_ROUTE : '/' . Routes::BASE_ROUTE . '/';
+        $this->view->addGlobal('baseroute', $baseroute);
+
         return $this->view->load($template)->render($params);
     }
 }

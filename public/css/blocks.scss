@@ -1,0 +1,38 @@
+$test: #007cc0;
+$early: #ce181e;
+$element: #7ac143;
+.parent {
+  padding: 3em;
+  display: grid;
+  font-size: 1em !important;
+  grid-gap: 2em;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  color: #ffffff !important;
+  font-weight: bold;
+  text-align: center;
+
+  .element {
+    padding: 2em;
+    border-radius: .3em;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2);
+    background-color: $element;
+    cursor: pointer;
+
+    &.early {
+      background-color: $early;
+      cursor: default;
+    }
+
+    .el-content {
+      display: none;
+    }
+  }
+
+  .test {
+    padding: 2em;
+    border-radius: .3em;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.2);
+    background-color: $test;
+  }
+}
+
