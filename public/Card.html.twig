@@ -1,19 +1,6 @@
-<style>
-    .ballsTeacher {
-        border: 1px solid gainsboro !important;
-        min-width: 3rem !important;
-        min-height: 3rem !important;
-        width: 3rem !important;
-        height: 3rem !important;
-        text-align: center !important;
-        border-radius: 5px !important;
-        font-size: 150% !important;
-        margin: 10px 10px !important;
-    }
-</style>
 <div class="base">
-    <form class="form">
-        <div class="base-box">
+    <div class="base-box" style="display:flex; justify-content: center; align-items: center">
+        <form action="" class="form" style="width: 80%;">
             <label>
                 <span>Тестирование</span>
                 <select name="test" id="test">
@@ -25,36 +12,16 @@
                     {% endfor %}
                 </select>
             </label>
-        </div>
-        <div class="rating-box mx-1 mt-1" id="cards">
+        </form>
 
-        </div>
-        <div class="el-content">
-            <input type="text" placeholder="1" max="1" elementid="1" class="ballsTeacher"
-                   autocomplete="off"
-                   onkeypress="return   event.charCode < 50 &amp;&amp; this.value.length <1 " value="0">
+    </div>
+    <div class="rating-box mx-1 mt-1" id="cards">
 
-            <input type="text" placeholder="2" max="1" elementid="2" class="ballsTeacher"
-                   autocomplete="off"
-                   onkeypress="return   event.charCode < 50 &amp;&amp; this.value.length <1 " value="0">
+    </div>
 
-            <input type="text" placeholder="3" max="2" elementid="3" class="ballsTeacher"
-                   autocomplete="off"
-                   onkeypress="return   event.charCode < 51 &amp;&amp; this.value.length <1 " value="0">
+    <div class="el-content my-2">
 
-            <input type="text" placeholder="4" max="1" elementid="4" class="ballsTeacher"
-                   autocomplete="off"
-                   onkeypress="return   event.charCode < 50 &amp;&amp; this.value.length <1 " value="0">
-
-            <input type="text" placeholder="5" max="4" elementid="5" class="ballsTeacher"
-                   autocomplete="off"
-                   onkeypress="return   event.charCode < 53 &amp;&amp; this.value.length <1 " value="4">
-
-            <input type="text" placeholder="6" max="1" elementid="6" class="ballsTeacher"
-                   autocomplete="off"
-                   onkeypress="return   event.charCode < 50 &amp;&amp; this.value.length <1 " value="1">
-        </div>
-    </form>
+    </div>
 </div>
 
 {% block js %}
@@ -65,13 +32,13 @@
                 getParticipants(testsElement.val()).then(function (res) {
                     if (res.length > 0) {
                         res.map(function (x) {
-                            $('#cards').html(renderName(x)).after(function () {
-                                setHandler(x);
-                                let elem = $(`#select_${testsElement.val()}`);
-                                getTest(elem.attr('year'), elem.attr('subject'), x.code).then(function (result) {
-                                    $(`#accord_${x.code}`).append(`<div class="accordion-content"> ${result} </div>`);
-                                })
-                            });
+                            $('#cards').append(renderName(x));
+                            setHandler(x);
+                            let elem = $(`#select_${testsElement.val()}`);
+                            getTest(elem.attr('year'), elem.attr('subject'), x.code).then(function (result) {
+                                $(`#accord_${x.code}`).append(`<div class="accordion-content" id="${x.code}"> ${result} </div>`);
+                                setBlockHadnlers();
+                            })
                         });
                     } else {
                         $('#cards').html('<h4>Ничего не найдено</h4>')
@@ -82,8 +49,20 @@
             }
         });
 
+        function setBlockHadnlers() {
+            $('.element.ready').each(function () {
+                $(this).on('click', function () {
+                    let particip = $(this).parent().parent().attr('id');
+                    let id = $(this).attr('id');
+                    getSubElements(id).then(res => {
+                        $('.el-content').html(res).after(() => setInputHandlers(id, particip));
+                    })
+                });
+            });
+        }
+
         function renderName(x) {
-            return `<div class="accordion name" id="accord_${x.code}">
+            return `<div class="accordion name my-1" id="accord_${x.code}">
                     <div class="accordion-name" id="block_${x.code}">
                         <p class="small font-weight-normal text-uppercase lts-2px"
                            style="cursor: pointer;"><b>${x.surname} ${x.name} ${x.secondname}</b>
@@ -93,8 +72,41 @@
                 </div>`
         }
 
-        function getSubs(id) {
 
+        function setInputHandlers(id, particip) {
+            $('.ballsTeacher').each(function () {
+                let min = parseInt($(this).attr('min'));
+                let max = parseInt($(this).attr('max'));
+                $(this).inputFilter(function (value) {
+                    console.log(parseInt(value));
+                    return /^\d*$/.test(value) && (value === "" || (parseInt(value) <= max));
+                });
+            });
+            $('#sub_elements').on('submit', function (e) {
+                e.preventDefault();
+                let elements = {};
+                $('.ballsTeacher').each(function () {
+                    elements = {...elements, [$(this).attr('element')]: $(this).val()};
+                });
+                $.ajax({
+                    type: "POST",
+                    url: `${baseUrl}/tests/save/${id}`,
+                    data: {
+                        user: particip,
+                        elements: elements
+                    }
+                }).fail((jqXHR, textStatus) => {
+                    $(this).html(badModal(`Ошибка ${jqXHR.status} ${jqXHR.responseText}`)).after(() => $('#circle').css('visibility', 'visible'));
+                    setTimeout(() => clearElems(), 1300);
+                }).done(res => {
+                    $(this).html(okModal("Данные успешно сохранены")).after(() => $('#circle').css('position', 'relative').css('visibility', 'visible'));
+                    setTimeout(() => clearElems(), 1300);
+                });
+            });
+        }
+
+        function clearElems() {
+            $('.el-content').html('');
         }
 
         function setHandler(x) {

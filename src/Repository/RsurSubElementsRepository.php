@@ -25,4 +25,12 @@ class RsurSubElementsRepository extends AbstractRepository
     {
         return TableNames::RSUR['sub_elements'];
     }
+
+    public function getMinsAndMaxs(int $elementId): array
+    {
+        $sql = sprintf('SELECT id, min, max FROM %s WHERE element_id = :elementid', $this::getTableName());
+        $stmt = $this->dbo->prepare($sql);
+        $stmt->execute(['elementid' => $elementId]);
+        return $stmt->fetchAll();
+    }
 }

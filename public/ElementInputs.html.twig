@@ -1,0 +1,19 @@
+{% if subelements %}
+	<form class="form-input-line my-2" id="sub_elements" style="justify-content: center">
+        {% set count = 1 %}
+        {% for subelement in subelements %}
+			<label class="popup-reg__label" style="margin-bottom: 0;">
+				<span class="lts-2px font-weight-medium" style="margin-bottom: 0; font-size: 1em; ">{{ count }}</span>
+				<input type="text" min="{{ subelement.min }}" max="{{ subelement.max }}"
+				       element= {{ subelement.id }} id="sub_{{ subelement.id }}"
+				       class="ballsTeacher"
+				       autocomplete="off" placeholder="0" required>
+			</label>
+            {% set count = count+1 %}
+        {% endfor %}
+		<div class="prof-box__action">
+			<input type="submit" class="btn btn--light " value="Сохранить">
+		</div>
+	</form>
+{% endif %}
+

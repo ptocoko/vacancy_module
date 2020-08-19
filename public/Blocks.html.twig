@@ -6,10 +6,9 @@
         </div>
         {% set counter =1 %}
         {% for element in tests.incoming.elements %}
-            <div id="elem_{{ element.id }}" {% if element.enable == 1 %} onclick="getSubs(this.id)" {% endif %}
-                 class="element {% if element.enable != 1 %} early {% endif %} ">
-                <p class="ready">{{ counter }} - {{ element.result }}%</p>
-            </div>
+	        <div id="{{ element.id }}" class="element {% if element.enable != 1 %} early {% else %} ready {% endif %} ">
+		        <p>{{ counter }} - {{ element.result }}%</p>
+	        </div>
             {% set counter = counter + 1 %}
         {% endfor %}
         <div id="test_{{ tests.out.id }}" class="test">

@@ -558,25 +558,7 @@ function check(pid, staid) {
     return true;
 }
 
-function okModal(text) {
-    return `<div id="circle" style="position: fixed; visibility: hidden">
-                    <svg class="checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-                        <circle class="checkmark__circle" cx="26" cy="26" fill="none" r="25"/>
-                        <path class="checkmark__check" d="M14.1 27.2l7.1 7.2 16.7-16.8" fill="none"/>
-                    </svg>
-                    <p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px" style="color: #7ac142;">${text}</p>
-	            </div>`;
-}
 
-function badModal(info) {
-    return `<div id="circle" style="position: fixed; visibility: hidden">
-                    <svg class="checkmark__x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                      <circle class="checkmark__circle__x" cx="26" cy="26" r="25" fill="none" />
-                      <path class="checkmark__check__x" fill="none" d="M16 16 36 36 M36 16 16 36" />
-                    </svg>
-                    <p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px" style="color: #d70707;">${info}</p>
-                </div>`;
-}
 
 function setModalHandlers() {
     const salaryElem = $(`#salary`);

@@ -69,7 +69,7 @@ class RsurTestController extends AbstractController
             $tests['out']['result'] = 0;
         }
         foreach ($tests['incoming']['elements'] as &$element) {
-            if (date('d.m.Y') == $element['date']) {
+            if (checkInRange($element['begin_date'], $element['end_date'], date('d.m.Y'))) {
                 $element['enable'] = 1;
             } else {
                 $element['enable'] = 0;

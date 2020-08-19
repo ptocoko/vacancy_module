@@ -6,7 +6,9 @@ namespace App\Core;
 
 use App\Controllers\IndexController;
 use App\Controllers\RsurParticipantsController;
+use App\Controllers\RsurSubElementsController;
 use App\Controllers\RsurTestController;
+use App\Controllers\SubTestController;
 use App\Controllers\VacancyController;
 use App\Controllers\VacancyResponseController;
 use App\Middleware\ApiMiddleWare;
@@ -124,8 +126,18 @@ class Routes
                                  * @see RsurTestController::getTestsAndElements()
                                  */
                                 SimpleRouter::get('/get_by_selection', 'RsurTestController@getTestsAndElements');
+                                /**
+                                 * @see SubTestController::saveResult()
+                                 */
+                                SimpleRouter::post('/save/{id}', 'SubTestController@saveResult')->where(
+                                        ['id' => '[0-9]+']
+                                );
                             }
                     );
+                    /**
+                     * @see RsurSubElementsController::getSubelementsByElement()
+                     */
+                    SimpleRouter::get('/sub_elements', 'RsurSubElementsController@getSubelementsByElement');
                 }
         );
     }

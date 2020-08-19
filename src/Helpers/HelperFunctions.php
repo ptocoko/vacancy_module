@@ -91,3 +91,19 @@ function csrf_token(): ?string
 
     return null;
 }
+
+
+/**
+ * Check if data is in range
+ * @param $start
+ * @param $end
+ * @param $fromUser
+ * @return bool
+ */
+function checkInRange($start, $end, $fromUser)
+{
+    $startTs = strtotime($start);
+    $endTs = strtotime($end);
+    $userTs = strtotime($fromUser);
+    return (($userTs >= $startTs) && ($userTs <= $endTs));
+}
